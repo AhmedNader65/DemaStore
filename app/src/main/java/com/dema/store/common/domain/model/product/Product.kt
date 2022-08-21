@@ -9,7 +9,7 @@ data class Product(
     val discountPrice: String,
     val tags: List<String>,
 ) {
-    val hasDiscount = price == discountPrice
+    val hasDiscount = price != discountPrice && discountPrice != "0"
 }
 
 data class ProductWithDetails(
@@ -22,5 +22,5 @@ data class ProductWithDetails(
     val discountPrice: String,
     val tags: List<String>,
 ) {
-    val hasDiscount = price == discountPrice
+    val hasDiscount = price != discountPrice && discountPrice != "0"
 }
