@@ -4,7 +4,7 @@ data class Details(
     val description: String,
     val size: String,
     val materials: String,
-    var liked: Boolean,
+    var isLiked: Boolean,
     val availableColors: List<String>,
     val relatedProducts: List<Product>,
     val reviews: List<Review>

@@ -4,7 +4,8 @@ data class Product(
     val id: Long,
     val name: String,
     val image: String,
-    val category: String,
+    val categoryId: Long,
+    val categoryName: String,
     val price: String,
     val discountPrice: String,
     val tags: List<String>,
@@ -16,10 +17,11 @@ data class ProductWithDetails(
     val id: Long,
     val name: String,
     val image: String,
-    val category: String,
+    val categoryId: Long,
+    val categoryName: String,
     val price: String,
-    val details: Details,
     val discountPrice: String,
+    val details: Details,
     val tags: List<String>,
 ) {
     val hasDiscount = price != discountPrice && discountPrice != "0"
