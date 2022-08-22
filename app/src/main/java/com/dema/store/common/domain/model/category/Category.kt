@@ -1,7 +1,7 @@
 package com.dema.store.common.domain.model.category
 
 data class Category(
-    val id: Int,
+    val id: Long,
     val name: String,
     val icon: String,
     val image: String,
