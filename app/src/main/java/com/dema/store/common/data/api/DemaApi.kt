@@ -1,8 +1,11 @@
 package com.dema.store.common.data.api
 
+import com.dema.store.common.data.api.ApiParameters.NO_AUTH_HEADER
 import com.dema.store.common.data.api.model.ApiCategory
 import com.dema.store.common.data.api.model.ApiPaginatedProducts
 import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.Headers
 
 interface DemaApi {
 
@@ -11,4 +14,8 @@ interface DemaApi {
 
     @GET(ApiConstants.CATEGORIES_ENDPOINT)
     suspend fun getCategories(): ApiCategory
+
+    @Headers(NO_AUTH_HEADER)
+    @GET(ApiConstants.CATEGORIES_ENDPOINT)
+    suspend fun login(): ApiCategory
 }
