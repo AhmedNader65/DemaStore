@@ -1,4 +1,4 @@
-package com.dema.store.common.data.cache
+package com.dema.store.common.data.cache.model
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -19,6 +19,7 @@ import com.dema.store.common.domain.model.product.Image
     indices = [Index("productId")]
 )
 data class CachedImage(
+    @PrimaryKey(autoGenerate = false)
     val id: Long = 0,
     val productId: Long,
     val path: String,

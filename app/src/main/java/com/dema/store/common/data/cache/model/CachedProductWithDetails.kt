@@ -1,4 +1,4 @@
-package com.dema.store.common.data.cache
+package com.dema.store.common.data.cache.model
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey
 import com.dema.store.common.domain.model.product.Details
 import com.dema.store.common.domain.model.product.Product
 import com.dema.store.common.domain.model.product.ProductWithDetails
-import com.dema.store.common.domain.model.product.Review
 
 @Entity(
     tableName = "products",

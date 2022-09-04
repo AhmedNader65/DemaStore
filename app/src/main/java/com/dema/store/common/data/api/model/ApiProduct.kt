@@ -82,7 +82,10 @@ fun ApiProductDetails.mapToDomainProductWithDetails(): ProductWithDetails {
             isLiked,
             reviews?.map {
                 it.mapToDomain()
-            } ?: emptyList()
+            } ?: emptyList(),
+            photos.map {
+                it.mapToDomain()
+            }
 
         ),
         inStock,
@@ -101,6 +104,7 @@ fun ApiReviews.mapToDomain(): Review {
         rate ?: 0
     )
 }
+
 fun ApiImage.mapToDomain(): Image {
     return Image(
         id ?: throw MappingException("Review ID cannot be null"),

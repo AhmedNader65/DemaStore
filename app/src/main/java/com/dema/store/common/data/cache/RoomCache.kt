@@ -34,37 +34,26 @@
 
 package com.dema.store.common.data.cache
 
-import androidx.room.Embedded
-import androidx.room.Relation
-import com.dema.store.common.domain.model.product.ProductWithDetails
+import com.dema.store.common.data.cache.daos.CategoriesDao
+import com.dema.store.common.data.cache.daos.ProductsDao
+import com.dema.store.common.data.cache.model.CachedCategory
+import com.dema.store.common.data.cache.model.CachedProductAggregate
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-data class CachedProductAggregate(
-    @Embedded
-    val product: CachedProductWithDetails,
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "productId"
-    )
-    val photos: List<CachedImage>,
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "productId"
-    )
-    val reviews: List<CachedReview>,
+class RoomCache @Inject constructor(
+    private val productsDao: ProductsDao,
+    private val categoriesDao: CategoriesDao
+) : Cache {
+  override suspend fun storeCategories(categories: List<CachedCategory>) {
+    categoriesDao.insert(categories)
+  }
 
-    ) {
+  override fun getProducts(): Flow<List<CachedProductAggregate>> {
+    return productsDao.getAllProducts()
+  }
 
-    companion object {
-        fun fromDomain(productWithDetails: ProductWithDetails): CachedProductAggregate {
-            return CachedProductAggregate(
-                product = CachedProductWithDetails.fromDomain(productWithDetails),
-                photos = productWithDetails.details.images.map {
-                    CachedImage.fromDomain(productWithDetails.id, it)
-                },
-                reviews = productWithDetails.details.reviews.map {
-                    CachedReview.fromDomain(productWithDetails.id, it)
-                },
-            )
-        }
-    }
+  override suspend fun storeProducts(products: List<CachedProductAggregate>) {
+    productsDao.insertProductsWithDetails(products)
+  }
 }

@@ -1,10 +1,9 @@
-package com.dema.store.common.data.cache
+package com.dema.store.common.data.cache.model
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.dema.store.common.domain.model.product.Image
 import com.dema.store.common.domain.model.product.Review
 
 @Entity(
@@ -20,6 +19,7 @@ import com.dema.store.common.domain.model.product.Review
     indices = [Index("productId")]
 )
 data class CachedReview(
+    @PrimaryKey(autoGenerate = false)
     val id: Long = 0,
     val productId: Long,
     val userName: String,
