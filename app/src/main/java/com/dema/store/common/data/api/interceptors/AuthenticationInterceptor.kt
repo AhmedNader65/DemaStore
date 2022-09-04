@@ -100,8 +100,8 @@ class AuthenticationInterceptor @Inject constructor(
 
     private fun Interceptor.Chain.proceedDeletingTokenIfUnauthorized(request: Request): Response {
         val response = proceed(request)
-
-        if (response.code == UNAUTHORIZED) {
+        val code = response.code
+        if (code == UNAUTHORIZED) {
             preferences.deleteTokenInfo()
         }
 

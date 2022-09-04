@@ -36,9 +36,8 @@ package com.dema.store.common.data.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.dema.store.common.data.preferences.PreferencesConstants.KEY_LOGGED
 import com.dema.store.common.data.preferences.PreferencesConstants.KEY_TOKEN
-import com.dema.store.common.data.preferences.PreferencesConstants.KEY_TOKEN_EXPIRATION_TIME
-import com.dema.store.common.data.preferences.PreferencesConstants.KEY_TOKEN_TYPE
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -58,13 +57,10 @@ class DemaStorePreferences @Inject constructor(
     edit { putString(KEY_TOKEN, token) }
   }
 
-  override fun putTokenExpirationTime(time: Long) {
-    edit { putLong(KEY_TOKEN_EXPIRATION_TIME, time) }
+  override fun putLogged(logged: Boolean) {
+    edit { putBoolean(KEY_LOGGED, logged) }
   }
 
-  override fun putTokenType(tokenType: String) {
-    edit { putString(KEY_TOKEN_TYPE, tokenType) }
-  }
 
   private inline fun edit(block: SharedPreferences.Editor.() -> Unit) {
     with(preferences.edit()) {
@@ -77,19 +73,14 @@ class DemaStorePreferences @Inject constructor(
     return preferences.getString(KEY_TOKEN, "").orEmpty()
   }
 
-  override fun getTokenExpirationTime(): Long {
-    return preferences.getLong(KEY_TOKEN_EXPIRATION_TIME, -1)
-  }
-
-  override fun getTokenType(): String {
-    return preferences.getString(KEY_TOKEN_TYPE, "").orEmpty()
+  override fun getLogged(): Boolean {
+    return preferences.getBoolean(KEY_LOGGED, false)
   }
 
   override fun deleteTokenInfo() {
     edit {
       remove(KEY_TOKEN)
-      remove(KEY_TOKEN_EXPIRATION_TIME)
-      remove(KEY_TOKEN_TYPE)
+      remove(KEY_LOGGED)
     }
   }
 }

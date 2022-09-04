@@ -32,15 +32,19 @@
  * THE SOFTWARE.
  */
 
-package com.dema.store.common.data.preferences
+package com.dema.store.common.data.di
 
-interface Preferences {
+import com.dema.store.common.data.preferences.DemaStorePreferences
+import com.dema.store.common.data.preferences.Preferences
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
-  fun putToken(token: String)
-  fun putLogged(logged: Boolean)
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class PreferencesModule {
 
-  fun getToken(): String
-  fun getLogged(): Boolean
-
-  fun deleteTokenInfo()
+  @Binds
+  abstract fun providePreferences(preferences: DemaStorePreferences): Preferences
 }
