@@ -19,7 +19,7 @@ import com.dema.store.common.domain.model.product.Review
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("organizationId")]
+    indices = [Index("categoryId")]
 )
 data class CachedProductWithDetails(
     @PrimaryKey(autoGenerate = false)
