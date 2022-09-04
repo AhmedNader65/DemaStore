@@ -9,6 +9,6 @@ interface DemaApi {
     @GET(ApiConstants.PRODUCTS_ENDPOINT)
     suspend fun getProducts(): ApiPaginatedProducts
 
-    @GET(ApiConstants.PRODUCTS_ENDPOINT)
+    @GET(ApiConstants.CATEGORIES_ENDPOINT)
     suspend fun getCategories(): ApiCategory
 }

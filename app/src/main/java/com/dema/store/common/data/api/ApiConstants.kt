@@ -3,7 +3,7 @@ package com.dema.store.common.data.api
 object ApiConstants {
   const val BASE_ENDPOINT = "https://api.demo.com/v2/"
   const val PRODUCTS_ENDPOINT = "products"
-  const val CATEGORIES_ENDPOINT = "categories"
+  const val CATEGORIES_ENDPOINT = "categories?pagination=0"
 }
 
 object ApiParameters {

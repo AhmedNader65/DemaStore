@@ -1,10 +1,6 @@
 package com.dema.store.common.data.api.model
 
 import com.dema.store.common.domain.model.category.Category
-import com.dema.store.common.domain.model.product.Details
-import com.dema.store.common.domain.model.product.Product
-import com.dema.store.common.domain.model.product.ProductWithDetails
-import com.dema.store.common.domain.model.product.Review
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 

@@ -46,18 +46,36 @@ data class Image(
     @field:Json(name = "id") val id: Long?,
     @field:Json(name = "path") val path: String?,
     @field:Json(name = "url") val url: String?,
-    @field:Json(name = "original_image_url") val original_image_url: String?,
-    @field:Json(name = "small_image_url") val small_image_url: String?,
-    @field:Json(name = "medium_image_url") val medium_image_url: String?,
-    @field:Json(name = "large_image_url") val large_image_url: String?
-)
+    @field:Json(name = "original_image_url") val original: String?,
+    @field:Json(name = "small_image_url") val small: String?,
+    @field:Json(name = "medium_image_url") val medium: String?,
+    @field:Json(name = "large_image_url") val large: String?
+) {
+    companion object {
+        const val EMPTY_PHOTO = ""
+    }
+
+    fun getSmallestAvailablePhoto(): String { // 1
+        return when {
+            isValidPhoto(small) -> small!!
+            isValidPhoto(medium) -> medium!!
+            isValidPhoto(large) -> large!!
+            isValidPhoto(original) -> original!!
+            else -> EMPTY_PHOTO
+        }
+    }
+
+    private fun isValidPhoto(photo: String?): Boolean { // 2
+        return !photo.isNullOrEmpty()
+    }
+}
 
 fun ApiProductDetails.mapToDomainProduct(): Product {
     return Product(
         id ?: throw MappingException("Product ID cannot be null"),
         sku.orEmpty(),
         name.orEmpty(),
-        photo?.small_image_url.orEmpty(),
+        photo?.getSmallestAvailablePhoto().orEmpty(),
         categoryId ?: throw MappingException("Category ID cannot be null"),
         categoryName.orEmpty(),
         price.orEmpty(),
@@ -74,7 +92,7 @@ fun ApiProductDetails.mapToDomainProductWithDetails(): ProductWithDetails {
         id ?: throw MappingException("Product ID cannot be null"),
         sku.orEmpty(),
         name.orEmpty(),
-        photo?.small_image_url.orEmpty(),
+        photo?.getSmallestAvailablePhoto().orEmpty(),
         categoryId ?: throw MappingException("Category ID cannot be null"),
         categoryName.orEmpty(),
         price.orEmpty(),
