@@ -5,9 +5,8 @@ data class Details(
     val size: String,
     val materials: String,
     var isLiked: Boolean,
-    val availableColors: List<String>,
-    val relatedProducts: List<Product>,
-    val reviews: List<Review>
+    val reviews: List<Review>,
+    val images: List<Image>
 ) {
 }
 

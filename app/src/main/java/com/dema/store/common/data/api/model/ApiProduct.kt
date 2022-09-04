@@ -1,9 +1,6 @@
 package com.dema.store.common.data.api.model
 
-import com.dema.store.common.domain.model.product.Details
-import com.dema.store.common.domain.model.product.Product
-import com.dema.store.common.domain.model.product.ProductWithDetails
-import com.dema.store.common.domain.model.product.Review
+import com.dema.store.common.domain.model.product.*
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -21,9 +18,8 @@ data class ApiProductDetails(
     @field:Json(name = "description") val description: String?,
     @field:Json(name = "price") val price: String?,
     @field:Json(name = "regular_price") val regularPrice: String?,
-    @field:Json(name = "base_image") val photo: Image?,
-    @field:Json(name = "images") val photos: List<Image>?,
-    @field:Json(name = "tags") val tags: List<String>?,
+    @field:Json(name = "base_image") val photo: ApiImage,
+    @field:Json(name = "images") val photos: List<ApiImage>,
     @field:Json(name = "reviews") val reviews: List<ApiReviews>?,
     @field:Json(name = "related_products") val relatedProducts: List<ApiProductDetails>?,
     @field:Json(name = "is_wishlisted") val isLiked: Boolean = false,
@@ -42,7 +38,7 @@ data class ApiReviews(
 )
 
 @JsonClass(generateAdapter = true)
-data class Image(
+data class ApiImage(
     @field:Json(name = "id") val id: Long?,
     @field:Json(name = "path") val path: String?,
     @field:Json(name = "url") val url: String?,
@@ -51,23 +47,6 @@ data class Image(
     @field:Json(name = "medium_image_url") val medium: String?,
     @field:Json(name = "large_image_url") val large: String?
 ) {
-    companion object {
-        const val EMPTY_PHOTO = ""
-    }
-
-    fun getSmallestAvailablePhoto(): String { // 1
-        return when {
-            isValidPhoto(small) -> small!!
-            isValidPhoto(medium) -> medium!!
-            isValidPhoto(large) -> large!!
-            isValidPhoto(original) -> original!!
-            else -> EMPTY_PHOTO
-        }
-    }
-
-    private fun isValidPhoto(photo: String?): Boolean { // 2
-        return !photo.isNullOrEmpty()
-    }
 }
 
 fun ApiProductDetails.mapToDomainProduct(): Product {
@@ -75,15 +54,14 @@ fun ApiProductDetails.mapToDomainProduct(): Product {
         id ?: throw MappingException("Product ID cannot be null"),
         sku.orEmpty(),
         name.orEmpty(),
-        photo?.getSmallestAvailablePhoto().orEmpty(),
+        photo.mapToDomain(),
         categoryId ?: throw MappingException("Category ID cannot be null"),
         categoryName.orEmpty(),
         price.orEmpty(),
         regularPrice.orEmpty(),
         inStock,
         isInCart,
-        isLiked,
-        tags.orEmpty()
+        isLiked
     )
 }
 
@@ -92,7 +70,7 @@ fun ApiProductDetails.mapToDomainProductWithDetails(): ProductWithDetails {
         id ?: throw MappingException("Product ID cannot be null"),
         sku.orEmpty(),
         name.orEmpty(),
-        photo?.getSmallestAvailablePhoto().orEmpty(),
+        photo.mapToDomain(),
         categoryId ?: throw MappingException("Category ID cannot be null"),
         categoryName.orEmpty(),
         price.orEmpty(),
@@ -101,17 +79,12 @@ fun ApiProductDetails.mapToDomainProductWithDetails(): ProductWithDetails {
             description.orEmpty(),
             size.orEmpty(),
             materials.orEmpty(),
-            isLiked ?: false,
-            colors.orEmpty(),
-            relatedProducts?.map {
-                it.mapToDomainProduct()
-            } ?: emptyList(),
+            isLiked,
             reviews?.map {
                 it.mapToDomain()
             } ?: emptyList()
 
         ),
-        tags.orEmpty(),
         inStock,
         isInCart,
         isLiked,
@@ -126,5 +99,16 @@ fun ApiReviews.mapToDomain(): Review {
         date.orEmpty(),
         review.orEmpty(),
         rate ?: 0
+    )
+}
+fun ApiImage.mapToDomain(): Image {
+    return Image(
+        id ?: throw MappingException("Review ID cannot be null"),
+        path.orEmpty(),
+        url.orEmpty(),
+        original.orEmpty(),
+        small.orEmpty(),
+        medium.orEmpty(),
+        large.orEmpty()
     )
 }
