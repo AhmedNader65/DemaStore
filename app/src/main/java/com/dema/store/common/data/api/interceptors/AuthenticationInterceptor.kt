@@ -34,10 +34,13 @@
 
 package com.dema.store.common.data.api.interceptors
 
+import com.dema.store.common.data.api.ApiParameters
 import com.dema.store.common.data.api.ApiParameters.AUTH_HEADER
 import com.dema.store.common.data.api.ApiParameters.NO_AUTH_HEADER
 import com.dema.store.common.data.api.ApiParameters.TOKEN_TYPE
+import com.dema.store.common.data.api.model.ApiAuthenticator
 import com.dema.store.common.data.preferences.Preferences
+import com.squareup.moshi.Moshi
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -46,40 +49,63 @@ import javax.inject.Inject
 
 class AuthenticationInterceptor @Inject constructor(
     private val preferences: Preferences
-): Interceptor {
+) : Interceptor {
 
-  companion object {
-    const val UNAUTHORIZED = 401
-  }
-
-  override fun intercept(chain: Interceptor.Chain): Response {
-      val token = preferences.getToken() // 1
-      val tokenExpirationTime =
-          Instant.ofEpochSecond(preferences.getTokenExpirationTime()) // 2
-      val request = chain.request() // 3
- if (chain.request().headers[NO_AUTH_HEADER] != null) return chain.proceed(request) // 4
-      val interceptedRequest: Request = chain.createAuthenticatedRequest(token) // 1 // 2
-
-      return chain
-          .proceedDeletingTokenIfUnauthorized(interceptedRequest) // 3
-  }
-
-  private fun Interceptor.Chain.createAuthenticatedRequest(token: String): Request {
-    return request()
-        .newBuilder()
-        .addHeader(AUTH_HEADER, TOKEN_TYPE + token)
-        .build()
-  }
-
-
-  private fun Interceptor.Chain.proceedDeletingTokenIfUnauthorized(request: Request): Response {
-    val response = proceed(request)
-
-    if (response.code == UNAUTHORIZED) {
-      preferences.deleteTokenInfo()
+    companion object {
+        const val UNAUTHORIZED = 401
     }
 
-    return response
-  }
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val token = preferences.getToken() // 1
+        val request = chain.request() // 3
+        if (chain.request().headers[NO_AUTH_HEADER] != null) {
+            val interceptedRequest = chain.proceed(request)
+            if (chain.request().headers[ApiParameters.CREATING_TOKEN] != null){
+                if (interceptedRequest.isSuccessful){
+                    val newToken = mapToken(interceptedRequest)
+                    if (newToken.isValid()) {
+                        storeNewToken(newToken)
+                    }
+                }
+            }
+                return interceptedRequest
+        } // 4
+        val interceptedRequest: Request = chain.createAuthenticatedRequest(token) // 1 // 2
+
+        return chain
+            .proceedDeletingTokenIfUnauthorized(interceptedRequest) // 3
+    }
+
+    private fun Interceptor.Chain.createAuthenticatedRequest(token: String): Request {
+        return request()
+            .newBuilder()
+            .addHeader(AUTH_HEADER, TOKEN_TYPE + token)
+            .build()
+    }
+
+
+    private fun mapToken(tokenRefreshResponse: Response): ApiAuthenticator {
+        val moshi = Moshi.Builder().build()
+        val tokenAdapter = moshi.adapter(ApiAuthenticator::class.java)
+        val responseBody = tokenRefreshResponse.body!! // if successful, this should be good :]
+
+        return tokenAdapter.fromJson(responseBody.string()) ?: ApiAuthenticator.INVALID
+    }
+
+    private fun storeNewToken(apiToken: ApiAuthenticator) {
+        with(preferences) {
+            putToken(apiToken.token!!)
+        }
+    }
+
+    private fun Interceptor.Chain.proceedDeletingTokenIfUnauthorized(request: Request): Response {
+        val response = proceed(request)
+
+        if (response.code == UNAUTHORIZED) {
+            preferences.deleteTokenInfo()
+        }
+
+        return response
+    }
 
 }

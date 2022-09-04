@@ -1,5 +1,6 @@
 package com.dema.store.common.data.api
 
+import com.dema.store.common.data.api.ApiParameters.CREATING_TOKEN
 import com.dema.store.common.data.api.ApiParameters.NO_AUTH_HEADER
 import com.dema.store.common.data.api.model.ApiCategory
 import com.dema.store.common.data.api.model.ApiPaginatedProducts
@@ -15,7 +16,7 @@ interface DemaApi {
     @GET(ApiConstants.CATEGORIES_ENDPOINT)
     suspend fun getCategories(): ApiCategory
 
-    @Headers(NO_AUTH_HEADER)
+    @Headers(NO_AUTH_HEADER,CREATING_TOKEN)
     @GET(ApiConstants.CATEGORIES_ENDPOINT)
     suspend fun login(): ApiCategory
 }
