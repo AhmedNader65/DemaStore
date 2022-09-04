@@ -8,36 +8,27 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class ApiProduct(
-    @field:Json(name = "id") val id: Long?,
-    @field:Json(name = "category_id") val categoryId: Long?,
-    @field:Json(name = "category_name") val categoryName: String?,
-    @field:Json(name = "name") val name: String?,
-    @field:Json(name = "photo") val photo: String?,
-    @field:Json(name = "tags") val tags: List<String>?,
-    @field:Json(name = "price") val price: String?,
-    @field:Json(name = "price_discount") val priceDiscount: String?
-)
-
-@JsonClass(generateAdapter = true)
 data class ApiProductDetails(
     @field:Json(name = "id") val id: Long?,
+    @field:Json(name = "sku") val sku: String?,
     @field:Json(name = "category_id") val categoryId: Long?,
     @field:Json(name = "category_name") val categoryName: String?,
-    @field:Json(name = "url") val url: String?,
+    @field:Json(name = "url_key") val url: String?,
     @field:Json(name = "colors") val colors: List<String>?,
     @field:Json(name = "size") val size: String?,
     @field:Json(name = "materials") val materials: String?,
     @field:Json(name = "name") val name: String?,
     @field:Json(name = "description") val description: String?,
     @field:Json(name = "price") val price: String?,
-    @field:Json(name = "price_discount") val priceDiscount: String?,
-    @field:Json(name = "photo") val photo: String?,
-    @field:Json(name = "photos") val photos: List<String>?,
+    @field:Json(name = "regular_price") val regularPrice: String?,
+    @field:Json(name = "base_image") val photo: Image?,
+    @field:Json(name = "images") val photos: List<Image>?,
     @field:Json(name = "tags") val tags: List<String>?,
     @field:Json(name = "reviews") val reviews: List<ApiReviews>?,
-    @field:Json(name = "related_products") val relatedProducts: List<ApiProduct>?,
-    @field:Json(name = "liked") val isLiked: Boolean?
+    @field:Json(name = "related_products") val relatedProducts: List<ApiProductDetails>?,
+    @field:Json(name = "is_wishlisted") val isLiked: Boolean = false,
+    @field:Json(name = "is_item_in_cart") val isInCart: Boolean = false,
+    @field:Json(name = "in_stock") val inStock: Boolean = false,
 )
 
 @JsonClass(generateAdapter = true)
@@ -50,28 +41,44 @@ data class ApiReviews(
     @field:Json(name = "rate") val rate: Int?
 )
 
-fun ApiProduct.mapToDomain(): Product {
+@JsonClass(generateAdapter = true)
+data class Image(
+    @field:Json(name = "id") val id: Long?,
+    @field:Json(name = "path") val path: String?,
+    @field:Json(name = "url") val url: String?,
+    @field:Json(name = "original_image_url") val original_image_url: String?,
+    @field:Json(name = "small_image_url") val small_image_url: String?,
+    @field:Json(name = "medium_image_url") val medium_image_url: String?,
+    @field:Json(name = "large_image_url") val large_image_url: String?
+)
+
+fun ApiProductDetails.mapToDomainProduct(): Product {
     return Product(
         id ?: throw MappingException("Product ID cannot be null"),
+        sku.orEmpty(),
         name.orEmpty(),
-        photo.orEmpty(),
+        photo?.small_image_url.orEmpty(),
         categoryId ?: throw MappingException("Category ID cannot be null"),
         categoryName.orEmpty(),
         price.orEmpty(),
-        priceDiscount.orEmpty(),
+        regularPrice.orEmpty(),
+        inStock,
+        isInCart,
+        isLiked,
         tags.orEmpty()
     )
 }
 
-fun ApiProductDetails.mapToDomain(): ProductWithDetails {
+fun ApiProductDetails.mapToDomainProductWithDetails(): ProductWithDetails {
     return ProductWithDetails(
         id ?: throw MappingException("Product ID cannot be null"),
+        sku.orEmpty(),
         name.orEmpty(),
-        photo.orEmpty(),
+        photo?.small_image_url.orEmpty(),
         categoryId ?: throw MappingException("Category ID cannot be null"),
         categoryName.orEmpty(),
         price.orEmpty(),
-        priceDiscount.orEmpty(),
+        regularPrice.orEmpty(),
         Details(
             description.orEmpty(),
             size.orEmpty(),
@@ -79,14 +86,17 @@ fun ApiProductDetails.mapToDomain(): ProductWithDetails {
             isLiked ?: false,
             colors.orEmpty(),
             relatedProducts?.map {
-                it.mapToDomain()
+                it.mapToDomainProduct()
             } ?: emptyList(),
             reviews?.map {
                 it.mapToDomain()
             } ?: emptyList()
 
         ),
-        tags.orEmpty()
+        tags.orEmpty(),
+        inStock,
+        isInCart,
+        isLiked,
     )
 }
 

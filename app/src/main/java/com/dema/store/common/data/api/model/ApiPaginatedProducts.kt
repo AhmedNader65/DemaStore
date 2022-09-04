@@ -7,16 +7,16 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class ApiPaginatedProducts(
-    @field:Json(name = "products") val products: List<ApiProduct>?,
-    @field:Json(name = "pagination") val pagination: ApiPagination?
+    @field:Json(name = "data") val products: List<ApiProductDetails>?,
+    @field:Json(name = "meta") val pagination: ApiPagination?
 )
 
 @JsonClass(generateAdapter = true)
 data class ApiPagination(
-    @field:Json(name = "count_per_page") val countPerPage: Int?,
-    @field:Json(name = "total_count") val totalCount: Int?,
+    @field:Json(name = "per_page") val countPerPage: Int?,
+    @field:Json(name = "total") val totalCount: Int?,
     @field:Json(name = "current_page") val currentPage: Int?,
-    @field:Json(name = "total_pages") val totalPages: Int?
+    @field:Json(name = "last_page") val totalPages: Int?
 )
 
 fun ApiPagination.mapToDomain(): Pagination {
@@ -29,7 +29,7 @@ fun ApiPagination.mapToDomain(): Pagination {
 fun ApiPaginatedProducts.mapToDomain(): PaginatedProducts {
     return PaginatedProducts(
         products?.map {
-            it.mapToDomain()
+            it.mapToDomainProduct()
         } ?: emptyList(),
         pagination = pagination?.mapToDomain() ?: Pagination(1, 1)
     )
