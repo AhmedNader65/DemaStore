@@ -81,7 +81,7 @@ data class CachedProductWithDetails(
     }
 
     fun toProductDomain(
-        image: CachedImage,
+        image: CachedImage?,
         category: CachedCategory
     ): Product {
 
@@ -89,7 +89,7 @@ data class CachedProductWithDetails(
             id = id,
             name = name,
             sku = sku,
-            image = image.toDomain(),
+            image = image?.toDomain(),
             categoryId = category.id,
             categoryName = category.name,
             price = price,

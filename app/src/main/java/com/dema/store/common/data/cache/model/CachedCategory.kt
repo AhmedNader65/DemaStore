@@ -1,6 +1,8 @@
 package com.dema.store.common.data.cache.model
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.dema.store.common.domain.model.category.Category
 

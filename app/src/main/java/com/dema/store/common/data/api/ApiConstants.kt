@@ -11,6 +11,7 @@ object ApiParameters {
   const val TOKEN_TYPE = "Bearer "
   const val AUTH_HEADER = "Authorization"
   const val NO_AUTH_HEADER = "NO_AUTH"
+  const val NO_AUTH_VALUE = "NA"
   const val CREATING_TOKEN = "CREATING_TOKEN"
   // PRODUCT
   const val PAGE = "page"

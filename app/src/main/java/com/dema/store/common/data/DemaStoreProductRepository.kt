@@ -3,6 +3,7 @@ package com.dema.store.common.data
 import com.dema.store.common.data.api.DemaApi
 import com.dema.store.common.data.api.model.mapToDomain
 import com.dema.store.common.data.api.model.mapToDomainProduct
+import com.dema.store.common.data.api.model.mapToDomainProductWithDetails
 import com.dema.store.common.data.cache.Cache
 import com.dema.store.common.data.cache.model.CachedCategory
 import com.dema.store.common.data.cache.model.CachedProductAggregate
@@ -47,7 +48,7 @@ class DemaStoreProductRepository @Inject constructor(
     override suspend fun requestMoreProducts(
         pageToLoad: Int,
         numberOfItems: Int,
-        category: Int,
+        category: Long,
 
         ): PaginatedProducts {
         val (apiProducts, apiPagination) = api.getProducts( // 1
@@ -57,7 +58,7 @@ class DemaStoreProductRepository @Inject constructor(
         )
         return PaginatedProducts( // 2
             apiProducts?.map {
-                it.mapToDomainProduct()
+                it.mapToDomainProductWithDetails()
             }.orEmpty(),
             apiPagination!!.mapToDomain()
         )

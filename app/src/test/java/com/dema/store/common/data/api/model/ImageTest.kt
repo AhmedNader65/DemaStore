@@ -1,5 +1,6 @@
 package com.dema.store.common.data.api.model
 
+import com.dema.store.common.domain.model.product.Image
 import org.junit.Assert.*
 
 import org.junit.Test

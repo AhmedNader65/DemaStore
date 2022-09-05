@@ -29,7 +29,7 @@ fun ApiPagination.mapToDomain(): Pagination {
 fun ApiPaginatedProducts.mapToDomain(): PaginatedProducts {
     return PaginatedProducts(
         products?.map {
-            it.mapToDomainProduct()
+            it.mapToDomainProductWithDetails()
         } ?: emptyList(),
         pagination = pagination?.mapToDomain() ?: Pagination(1, 1)
     )

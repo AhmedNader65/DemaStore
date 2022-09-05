@@ -30,19 +30,24 @@ data class CachedImage(
     val large: String
 ) {
     companion object {
-        fun fromDomain(productId: Long, photo: Image): CachedImage {
-            val (id, path, url, original, small, medium, large) = photo
+        fun fromDomain(productId: Long, photo: Image?): CachedImage? {
+            photo?.let {
+                val (id, path, url, original, small, medium, large) = photo
 
-            return CachedImage(
-                productId = productId,
-                id = id,
-                path = path,
-                url = url,
-                original = original,
-                small = small,
-                medium = medium,
-                large = large
-            )
+                return CachedImage(
+                    productId = productId,
+                    id = id,
+                    path = path,
+                    url = url,
+                    original = original,
+                    small = small,
+                    medium = medium,
+                    large = large
+                )
+            }.run {
+                return null
+            }
+
         }
     }
 

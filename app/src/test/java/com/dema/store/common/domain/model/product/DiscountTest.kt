@@ -11,7 +11,7 @@ class DiscountTest {
             1,
             "sku",
             "TestingProduct",
-            "Image",
+            Image(1,"","","","","",""),
             50L,
             "Category",
             "50",
@@ -19,7 +19,6 @@ class DiscountTest {
             true,
             true,
             true,
-            emptyList()
         )
         val expectedValue = true
         // WHEN
@@ -34,14 +33,14 @@ class DiscountTest {
         val product = Product(1,
             "sku",
             "TestingProduct",
-            "Image",
+            Image(1,"","","","","",""),
             50L,
             "Category",
             "50",
             "50",
             true,
             true,
-            true, emptyList())
+            true)
         val expectedValue = false
         // WHEN
         val hasDiscount = product.hasDiscount

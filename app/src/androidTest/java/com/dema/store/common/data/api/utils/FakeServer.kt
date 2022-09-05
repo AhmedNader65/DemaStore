@@ -32,32 +32,65 @@
  * THE SOFTWARE.
  */
 
-package com.dema.store.common.data.cache
+package com.dema.store.common.data.api.utils
 
-import com.dema.store.common.data.cache.daos.CategoriesDao
-import com.dema.store.common.data.cache.daos.ProductsDao
-import com.dema.store.common.data.cache.model.CachedCategory
-import com.dema.store.common.data.cache.model.CachedProductAggregate
-import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
+import android.content.Context
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.platform.app.InstrumentationRegistry
+import com.dema.store.common.data.api.ApiConstants
+import com.dema.store.utils.Logger
+import okhttp3.mockwebserver.Dispatcher
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import okhttp3.mockwebserver.RecordedRequest
+import java.io.IOException
+import java.io.InputStream
 
-class RoomCache @Inject constructor(
-    private val productsDao: ProductsDao,
-    private val categoriesDao: CategoriesDao
-) : Cache {
-  override suspend fun storeCategories(categories: List<CachedCategory>) {
-    categoriesDao.insert(categories)
+class FakeServer {
+  private val mockWebServer = MockWebServer()
+
+  private val endpointSeparator = "/"
+  private val productsEndpointPath = endpointSeparator + ApiConstants.PRODUCTS_ENDPOINT
+  private val notFoundResponse = MockResponse().setResponseCode(404)
+
+  val baseEndpoint
+    get() = mockWebServer.url(endpointSeparator)
+
+  fun start() {
+    mockWebServer.start(8080)
   }
 
-  override fun getProducts(): Flow<List<CachedProductAggregate>> {
-    return productsDao.getAllProducts()
+  fun setHappyPathDispatcher() {
+    mockWebServer.dispatcher = object : Dispatcher() {
+      override fun dispatch(request: RecordedRequest): MockResponse {
+        val path = request.path ?: return notFoundResponse
+
+        return with(path) {
+          when {
+            startsWith(productsEndpointPath) -> {
+              MockResponse().setResponseCode(200).setBody(getJson("products.json"))
+            }
+            else -> {
+              notFoundResponse
+            }
+          }
+        }
+      }
+    }
   }
 
-  override fun getCategories(): Flow<List<CachedCategory>> {
-    return categoriesDao.getAllCategories()
+  fun shutdown() {
+    mockWebServer.shutdown()
   }
 
-  override suspend fun storeProducts(products: List<CachedProductAggregate>) {
-    productsDao.insertProductsWithDetails(products)
+  private fun getJson(path: String): String {
+    return try {
+      val context = ApplicationProvider.getApplicationContext<Context>()
+      val jsonStream: InputStream = context.assets.open("networkresponses/$path")
+      String(jsonStream.readBytes())
+    } catch (exception: IOException) {
+      Logger.e(exception, "Error reading network response json asset")
+      throw exception
+    }
   }
 }

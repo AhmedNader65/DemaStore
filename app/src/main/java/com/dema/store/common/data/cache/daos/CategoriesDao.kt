@@ -34,14 +34,17 @@
 
 package com.dema.store.common.data.cache.daos
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
+import androidx.room.*
 import com.dema.store.common.data.cache.model.CachedCategory
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CategoriesDao {
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   suspend fun insert(organizations: List<CachedCategory>)
+
+  @Transaction
+  @Query("SELECT * FROM categories")
+  abstract fun getAllCategories(): Flow<List<CachedCategory>>
 }

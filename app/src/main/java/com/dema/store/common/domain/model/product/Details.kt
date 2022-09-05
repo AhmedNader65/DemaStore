@@ -6,7 +6,7 @@ data class Details(
     val materials: String,
     var isLiked: Boolean,
     val reviews: List<Review>,
-    val images: List<Image>
+    val images: List<Image?>
 ) {
 }
 

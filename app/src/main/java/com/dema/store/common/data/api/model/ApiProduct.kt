@@ -105,14 +105,19 @@ fun ApiReviews.mapToDomain(): Review {
     )
 }
 
-fun ApiImage.mapToDomain(): Image {
-    return Image(
-        id ?: throw MappingException("Review ID cannot be null"),
-        path.orEmpty(),
-        url.orEmpty(),
-        original.orEmpty(),
-        small.orEmpty(),
-        medium.orEmpty(),
-        large.orEmpty()
-    )
+fun ApiImage.mapToDomain(): Image? {
+    id?.let {
+        return Image(
+            it ,
+            path.orEmpty(),
+            url.orEmpty(),
+            original.orEmpty(),
+            small.orEmpty(),
+            medium.orEmpty(),
+            large.orEmpty()
+        )
+    }.run{
+        return null
+    }
+
 }

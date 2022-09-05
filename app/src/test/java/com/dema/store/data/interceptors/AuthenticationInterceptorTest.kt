@@ -102,7 +102,6 @@ class AuthenticationInterceptorTest {
         verify(preferences, times(1)).deleteTokenInfo()
         verifyNoMoreInteractions(preferences)
     }
-
     @Test
     fun authenticatorInterceptor_expiredToken() {
         // Given

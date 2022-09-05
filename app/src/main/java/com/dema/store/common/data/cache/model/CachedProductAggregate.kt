@@ -46,7 +46,7 @@ data class CachedProductAggregate(
         parentColumn = "id",
         entityColumn = "productId"
     )
-    val photos: List<CachedImage>,
+    val photos: List<CachedImage?>,
     @Relation(
         parentColumn = "id",
         entityColumn = "productId"
