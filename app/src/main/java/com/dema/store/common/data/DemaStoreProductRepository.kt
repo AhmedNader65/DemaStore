@@ -67,7 +67,7 @@ class DemaStoreProductRepository @Inject constructor(
 
     override suspend fun requestCategories(): List<Category> {
         val apiCategory = api.getCategories()
-        return apiCategory.map {
+        return apiCategory.data.map {
             it.mapToDomain()
         }
     }

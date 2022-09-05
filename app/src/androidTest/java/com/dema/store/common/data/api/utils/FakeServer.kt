@@ -51,6 +51,7 @@ class FakeServer {
 
   private val endpointSeparator = "/"
   private val productsEndpointPath = endpointSeparator + ApiConstants.PRODUCTS_ENDPOINT
+  private val categoriesEndpointPath = endpointSeparator + ApiConstants.CATEGORIES_ENDPOINT
   private val notFoundResponse = MockResponse().setResponseCode(404)
 
   val baseEndpoint
@@ -69,6 +70,9 @@ class FakeServer {
           when {
             startsWith(productsEndpointPath) -> {
               MockResponse().setResponseCode(200).setBody(getJson("products.json"))
+            }
+            startsWith(categoriesEndpointPath) -> {
+              MockResponse().setResponseCode(200).setBody(getJson("categories.json"))
             }
             else -> {
               notFoundResponse

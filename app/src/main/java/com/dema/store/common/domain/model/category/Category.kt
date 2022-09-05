@@ -5,7 +5,6 @@ data class Category(
     val name: String,
     val slug: String,
     val icon: String,
-    val image: String,
-    val productCount: Int
+    val image: String
 ) {
 }

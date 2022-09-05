@@ -13,8 +13,7 @@ data class CachedCategory(
     val name: String,
     val slug: String,
     val icon: String,
-    val image: String,
-    val productCount: Int
+    val image: String
 ) {
     companion object {
         fun fromDomain(domainModel: Category): CachedCategory {
@@ -24,8 +23,7 @@ data class CachedCategory(
                 name = domainModel.name,
                 slug = domainModel.slug,
                 icon = domainModel.icon,
-                image = domainModel.image,
-                productCount = domainModel.productCount
+                image = domainModel.image
             )
         }
     }
@@ -36,8 +34,7 @@ data class CachedCategory(
             name,
             slug,
             icon,
-            image,
-            productCount
+            image
         )
     }
 }

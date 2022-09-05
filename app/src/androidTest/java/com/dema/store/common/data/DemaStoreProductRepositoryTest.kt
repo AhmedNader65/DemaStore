@@ -110,19 +110,32 @@ class DemaStoreProductRepositoryTest {
     }
 
     @Test
-    fun getCategories() {
+    fun getCategories() = runBlocking {
+        // Given
+        val expectedCategoryId = 21L
+        fakeServer.setHappyPathDispatcher()
+        // When
+        val categories = repository.requestCategories()
+        // Then
+        val category = categories.first()
+        assert(category.id == expectedCategoryId)
     }
 
-    @Test
-    fun requestMoreProducts() {
-    }
-
-    @Test
-    fun requestCategories() {
-    }
 
     @Test
     fun storeCategory() {
+        // Given
+        val expectedCategoryId = 21L
+        runBlocking {
+            fakeServer.setHappyPathDispatcher()
+            val categories = repository.requestCategories()
+            val category = categories.first()
+            // When
+            repository.storeCategory(listOf(category))
+            // Then
+            val insertedValue = repository.getCategories().first()
+            assert(insertedValue[0].id == expectedCategoryId)
+        }
     }
 
     @Test
@@ -131,10 +144,11 @@ class DemaStoreProductRepositoryTest {
         val expectedProductId = 411L
         runBlocking {
             fakeServer.setHappyPathDispatcher()
-            val category = Category(0, "", "", "", "", 5)
+            val category = Category(4, "", "", "", "")
             val paginatedProducts = repository.requestMoreProducts(1, 100, category.id)
             val product = paginatedProducts.products.first()
             // When
+            repository.storeCategory(listOf(category))
             repository.storeProducts(category, listOf(product))
             // Then
             val insertedValue = repository.getProducts().first()
