@@ -39,9 +39,11 @@ import com.dema.store.common.data.cache.model.CachedProductAggregate
 import kotlinx.coroutines.flow.Flow
 
 interface Cache {
-  suspend fun storeCategories(categories: List<CachedCategory>)
+    suspend fun storeCategories(categories: List<CachedCategory>)
 
-  fun getProducts(): Flow<List<CachedProductAggregate>>
+    fun getProducts(): Flow<List<CachedProductAggregate>>
 
-  suspend fun storeProducts(products: List<CachedProductAggregate>)
+    fun getCategories(): Flow<List<CachedCategory>>
+
+    suspend fun storeProducts(products: List<CachedProductAggregate>)
 }

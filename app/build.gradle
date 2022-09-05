@@ -78,11 +78,19 @@ dependencies {
     implementation("com.google.dagger:hilt-android:$hilt_version")
     kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
     kapt 'androidx.hilt:hilt-compiler:1.0.0'
-    implementation "com.jakewharton.timber:timber:$timber_version"
+    // For instrumented tests.
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.38.1'
+    // ...with Kotlin.
+    kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.38.1'
 
+    // For Robolectric tests.
+    testImplementation 'com.google.dagger:hilt-android-testing:2.38.1'
+    // ...with Kotlin.
+    kaptTest 'com.google.dagger:hilt-android-compiler:2.38.1'
 
     // Utils
     implementation "com.jakewharton.threetenabp:threetenabp:$threetenabp_version"
+    implementation "com.jakewharton.timber:timber:$timber_version"
 
     // Caching
     implementation "androidx.room:room-runtime:$room_version"

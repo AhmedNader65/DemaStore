@@ -16,7 +16,7 @@ abstract class ProductsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertProductAggregate(
-        animal: CachedProductWithDetails,
+        products: CachedProductWithDetails,
         photos: List<CachedImage>,
         reviews: List<CachedReview>,
     )

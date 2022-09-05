@@ -12,4 +12,8 @@ object ApiParameters {
   const val AUTH_HEADER = "Authorization"
   const val NO_AUTH_HEADER = "NO_AUTH"
   const val CREATING_TOKEN = "CREATING_TOKEN"
+  // PRODUCT
+  const val PAGE = "page"
+  const val LIMIT = "limit"
+  const val CATEGORY_ID = "category_id"
 }

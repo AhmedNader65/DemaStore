@@ -80,7 +80,7 @@ data class CachedProductWithDetails(
         )
     }
 
-    fun toAnimalDomain(
+    fun toProductDomain(
         image: CachedImage,
         category: CachedCategory
     ): Product {
