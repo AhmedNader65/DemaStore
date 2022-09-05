@@ -3,7 +3,9 @@ package com.dema.store.common.data
 import com.dema.store.common.data.api.DemaApi
 import com.dema.store.common.data.cache.Cache
 import com.dema.store.common.data.di.PreferencesModule
+import com.dema.store.common.data.preferences.Preferences
 import com.dema.store.common.domain.repositories.ProductsRepository
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -22,6 +24,9 @@ class DemaStoreProductRepositoryTest {
     private lateinit var repository: ProductsRepository
     private lateinit var api: DemaApi
 
+    @BindValue // This annotation handles the replacement and injection
+    @JvmField // can be removed in future
+    val preferences: Preferences = FakePreferences()
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
 
