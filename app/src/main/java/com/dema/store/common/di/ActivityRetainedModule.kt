@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Razeware LLC
+ * Copyright (c) 2022 Razeware LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,40 +32,28 @@
  * THE SOFTWARE.
  */
 
-package com.dema.store.common.data.cache.daos
+package com.dema.store.common.di
 
-import androidx.room.*
-import com.dema.store.common.data.cache.model.CachedCategory
-import com.dema.store.common.data.cache.model.CachedUpdateCategory
-import com.dema.store.common.domain.model.category.UpdateCategory
-import kotlinx.coroutines.flow.Flow
+import com.dema.store.common.data.DemaStoreProductRepository
+import com.dema.store.common.domain.repositories.ProductsRepository
+import com.dema.store.common.utils.CoroutineDispatchersProvider
+import com.dema.store.common.utils.DispatchersProvider
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 
-@Dao
-abstract class CategoriesDao {
+@Module
+@InstallIn(ActivityRetainedComponent::class)
+abstract class ActivityRetainedModule {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(organizations: List<CachedCategory>)
+    @Binds
+    @ActivityRetainedScoped
+    abstract fun bindProductsRepository(repository: DemaStoreProductRepository): ProductsRepository
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(organizations: CachedCategory)
+    @Binds
+    abstract fun bindDispatchersProvider(dispatchersProvider: CoroutineDispatchersProvider):
+            DispatchersProvider
 
-    @Update(entity = CachedCategory::class)
-    abstract suspend fun update(updateCategory: CachedUpdateCategory)
-
-    @Transaction
-    @Query("SELECT * FROM categories")
-    abstract fun getAllCategories(): Flow<List<CachedCategory>>
-
-    @Transaction
-    @Query("SELECT * FROM categories WHERE id = :id")
-    abstract fun getCategoryById(id: Long): CachedCategory?
-
-
-    suspend fun insertOrUpdate(updatedCategory: CachedUpdateCategory) {
-        val itemsFromDB = getCategoryById(updatedCategory.id)
-        if (itemsFromDB != null)
-            update(updatedCategory)
-        else
-            insert(updatedCategory.toCachedCategory())
-    }
 }

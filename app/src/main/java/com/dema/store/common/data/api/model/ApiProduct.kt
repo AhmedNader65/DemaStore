@@ -25,6 +25,9 @@ data class ApiProductDetails(
     @field:Json(name = "is_wishlisted") val isLiked: Boolean = false,
     @field:Json(name = "is_item_in_cart") val isInCart: Boolean = false,
     @field:Json(name = "in_stock") val inStock: Boolean = false,
+    @field:Json(name = "is_new") val isNew: Boolean = false,
+    @field:Json(name = "is_popular") val isPopular: Boolean = false,
+    @field:Json(name = "is_Sale") val isSale: Boolean = false,
 )
 
 @JsonClass(generateAdapter = true)
@@ -59,6 +62,9 @@ fun ApiProductDetails.mapToDomainProduct(): Product {
         categoryName.orEmpty(),
         price.orEmpty(),
         regularPrice.orEmpty(),
+        isNew,
+        isSale,
+        isPopular,
         inStock,
         isInCart,
         isLiked
@@ -88,6 +94,9 @@ fun ApiProductDetails.mapToDomainProductWithDetails(): ProductWithDetails {
             }
 
         ),
+        isNew,
+        isSale,
+        isPopular,
         inStock,
         isInCart,
         isLiked,
@@ -108,7 +117,7 @@ fun ApiReviews.mapToDomain(): Review {
 fun ApiImage.mapToDomain(): Image? {
     id?.let {
         return Image(
-            it ,
+            it,
             path.orEmpty(),
             url.orEmpty(),
             original.orEmpty(),
@@ -116,7 +125,7 @@ fun ApiImage.mapToDomain(): Image? {
             medium.orEmpty(),
             large.orEmpty()
         )
-    }.run{
+    }.run {
         return null
     }
 

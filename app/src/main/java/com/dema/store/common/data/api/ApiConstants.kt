@@ -1,8 +1,9 @@
 package com.dema.store.common.data.api
 
 object ApiConstants {
-  const val BASE_ENDPOINT = "https://api.demo.com/v2/"
+  const val BASE_ENDPOINT = "http://192.168.1.3:8080/api/"
   const val PRODUCTS_ENDPOINT = "products"
+  const val HOME_ENDPOINT = "home"
   const val CATEGORIES_ENDPOINT = "categories?pagination=0"
   const val AUTH_ENDPOINT = "customer/login?token=true"
 }

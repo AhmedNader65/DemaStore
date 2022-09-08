@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Razeware LLC
+ * Copyright (c) 2022 Razeware LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,40 +32,8 @@
  * THE SOFTWARE.
  */
 
-package com.dema.store.common.data.cache.daos
+package com.dema.store.home.presentation
 
-import androidx.room.*
-import com.dema.store.common.data.cache.model.CachedCategory
-import com.dema.store.common.data.cache.model.CachedUpdateCategory
-import com.dema.store.common.domain.model.category.UpdateCategory
-import kotlinx.coroutines.flow.Flow
-
-@Dao
-abstract class CategoriesDao {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(organizations: List<CachedCategory>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(organizations: CachedCategory)
-
-    @Update(entity = CachedCategory::class)
-    abstract suspend fun update(updateCategory: CachedUpdateCategory)
-
-    @Transaction
-    @Query("SELECT * FROM categories")
-    abstract fun getAllCategories(): Flow<List<CachedCategory>>
-
-    @Transaction
-    @Query("SELECT * FROM categories WHERE id = :id")
-    abstract fun getCategoryById(id: Long): CachedCategory?
-
-
-    suspend fun insertOrUpdate(updatedCategory: CachedUpdateCategory) {
-        val itemsFromDB = getCategoryById(updatedCategory.id)
-        if (itemsFromDB != null)
-            update(updatedCategory)
-        else
-            insert(updatedCategory.toCachedCategory())
-    }
+sealed class HomeEvent {
+  object RequestInitialProductsList: HomeEvent()
 }

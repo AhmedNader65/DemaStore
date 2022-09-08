@@ -1,14 +1,14 @@
-package com.dema.store.common.domain.presentation
+package com.dema.store.common.presentation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.dema.store.common.domain.model.product.Product
+import com.dema.store.common.presentation.model.UIProduct
 import com.dema.store.databinding.ItemProductBinding
 
-class ProductsAdapter : ListAdapter<Product, ProductsAdapter.ProductsViewHolder>(ITEM_COMPARATOR) {
+class ProductsAdapter : ListAdapter<UIProduct, ProductsAdapter.ProductsViewHolder>(ITEM_COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductsViewHolder {
         val binding = ItemProductBinding
@@ -18,7 +18,7 @@ class ProductsAdapter : ListAdapter<Product, ProductsAdapter.ProductsViewHolder>
     }
 
     override fun onBindViewHolder(holder: ProductsViewHolder, position: Int) {
-        val item: Product = getItem(position)
+        val item: UIProduct = getItem(position)
 
         holder.bind(item)
     }
@@ -27,19 +27,17 @@ class ProductsAdapter : ListAdapter<Product, ProductsAdapter.ProductsViewHolder>
         private val binding: ItemProductBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Product) {
+        fun bind(item: UIProduct) {
         }
     }
 }
 
-private val ITEM_COMPARATOR = object : DiffUtil.ItemCallback<Product>() {
-    override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
-        // TODO: compare identity
-        return true
+private val ITEM_COMPARATOR = object : DiffUtil.ItemCallback<UIProduct>() {
+    override fun areItemsTheSame(oldItem: UIProduct, newItem: UIProduct): Boolean {
+        return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean {
-        // TODO: compare contents
-        return true
+    override fun areContentsTheSame(oldItem: UIProduct, newItem: UIProduct): Boolean {
+        return oldItem == newItem
     }
 }

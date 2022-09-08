@@ -1,4 +1,4 @@
-package com.dema.store.common.domain.presentation
+package com.dema.store.common.presentation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dema.store.common.domain.model.product.Product
-import com.dema.store.databinding.ItemProductBinding
 import com.dema.store.databinding.ItemSliderBinding
 
 class SliderAdapter : ListAdapter<Product, SliderAdapter.SlidersViewHolder>(ITEM_COMPARATOR) {

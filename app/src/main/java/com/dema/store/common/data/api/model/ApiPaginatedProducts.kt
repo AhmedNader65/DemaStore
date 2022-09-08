@@ -2,6 +2,7 @@ package com.dema.store.common.data.api.model
 
 import com.dema.store.common.domain.model.pagination.PaginatedProducts
 import com.dema.store.common.domain.model.pagination.Pagination
+import com.dema.store.home.domain.model.HomeProducts
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -9,6 +10,13 @@ import com.squareup.moshi.JsonClass
 data class ApiPaginatedProducts(
     @field:Json(name = "data") val products: List<ApiProductDetails>?,
     @field:Json(name = "meta") val pagination: ApiPagination?
+)
+
+@JsonClass(generateAdapter = true)
+data class ApiHomeProducts(
+    @field:Json(name = "new") val newProducts: List<ApiProductDetails>?,
+    @field:Json(name = "popular") val popularProducts: List<ApiProductDetails>?,
+    @field:Json(name = "sale") val saleProducts: List<ApiProductDetails>?,
 )
 
 @JsonClass(generateAdapter = true)
@@ -32,5 +40,18 @@ fun ApiPaginatedProducts.mapToDomain(): PaginatedProducts {
             it.mapToDomainProductWithDetails()
         } ?: emptyList(),
         pagination = pagination?.mapToDomain() ?: Pagination(1, 1)
+    )
+}
+fun ApiHomeProducts.mapToDomain(): HomeProducts {
+    return HomeProducts(
+        newProducts?.map {
+            it.mapToDomainProductWithDetails()
+        } ?: emptyList(),
+        popularProducts?.map {
+            it.mapToDomainProductWithDetails()
+        } ?: emptyList(),
+        saleProducts?.map {
+            it.mapToDomainProductWithDetails()
+        } ?: emptyList(),
     )
 }

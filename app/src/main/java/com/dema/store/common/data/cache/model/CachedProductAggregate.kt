@@ -37,6 +37,7 @@ package com.dema.store.common.data.cache.model
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.dema.store.common.domain.model.category.Category
+import com.dema.store.common.domain.model.category.UpdateCategory
 import com.dema.store.common.domain.model.product.ProductWithDetails
 
 data class CachedProductAggregate(
@@ -63,7 +64,7 @@ data class CachedProductAggregate(
     companion object {
         fun fromDomain(
             productWithDetails: ProductWithDetails,
-            category: Category
+            category: UpdateCategory
         ): CachedProductAggregate {
             return CachedProductAggregate(
                 product = CachedProductWithDetails.fromDomain(productWithDetails),
@@ -73,7 +74,7 @@ data class CachedProductAggregate(
                 reviews = productWithDetails.details.reviews.map {
                     CachedReview.fromDomain(productWithDetails.id, it)
                 },
-                category = CachedCategory.fromDomain(category)
+                category = CachedUpdateCategory.fromDomain(category).toCachedCategory()
             )
         }
     }

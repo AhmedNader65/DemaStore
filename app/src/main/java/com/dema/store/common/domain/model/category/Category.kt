@@ -8,3 +8,8 @@ data class Category(
     val image: String
 ) {
 }
+data class UpdateCategory(
+    val id: Long,
+    val name: String,
+) {
+}
