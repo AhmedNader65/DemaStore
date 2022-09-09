@@ -15,6 +15,10 @@ abstract class ProductsDao {
     abstract fun getAllProducts(): Flow<List<CachedProductAggregate>>
 
     @Transaction
+    @Query("SELECT * FROM products where categoryId = :categoryId")
+    abstract fun getCategoryProduct(categoryId: Long): Flow<List<CachedProductAggregate>>
+
+    @Transaction
     @Query("SELECT * FROM products where isPopular = :featured")
     abstract fun getFeaturedProducts(featured: Boolean): LiveData<List<CachedProductAggregate>>
 

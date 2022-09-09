@@ -24,8 +24,8 @@ class DemaStoreProductRepository @Inject constructor(
     private val api: DemaApi,
     private val cache: Cache
 ) : ProductsRepository {
-    override fun getProducts(): Flow<List<Product>> {
-        return cache.getProducts()
+    override fun getProducts(categoryId: Long): Flow<List<Product>> {
+        return cache.getProducts(categoryId)
             .distinctUntilChanged() // ensures only events with new information get to the subscriber.
             .map { productsList ->
                 productsList.map {

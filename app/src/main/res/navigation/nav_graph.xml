@@ -11,4 +11,16 @@
         android:name="com.dema.store.home.presentation.HomeFragment"
         android:label="@string/home"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/store"
+        android:name="com.dema.store.shopping.presentation.StoreFragment"
+        android:label="Store"
+        tools:layout="@layout/fragment_store" />
+
+    <fragment
+        android:id="@+id/profile"
+        android:name="com.dema.store.profile.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile" />
+
 </navigation>

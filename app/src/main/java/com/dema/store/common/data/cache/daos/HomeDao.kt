@@ -21,7 +21,5 @@ abstract class HomeDao {
     abstract suspend fun insertHome(
         vararg home: CachedHome
     )
-    @Query("DELETE FROM home")
-    abstract suspend fun emptyData()
 
 }

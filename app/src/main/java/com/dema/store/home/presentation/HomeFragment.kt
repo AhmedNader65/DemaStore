@@ -40,11 +40,11 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI()
-        requestInitialAnimalsList()
+        requestInitialHomeData()
     }
 
-    private fun requestInitialAnimalsList() {
-        viewModel.onEvent(HomeEvent.RequestInitialProductsList)
+    private fun requestInitialHomeData() {
+//        viewModel.onEvent(HomeEvent.RequestInitialProductsList)
     }
 
 
@@ -60,19 +60,16 @@ class HomeFragment : Fragment() {
 
     private fun setupSalesRecyclerView(salesAdapter: ProductsAdapter) {
         binding.saleRecycler.adapter = salesAdapter
-        binding.newCollectionRecycler.setHasFixedSize(true)
     }
 
     private fun setupPopularRecyclerView(popularAdapter: ProductsAdapter) {
 
         binding.popularProductRecycler.adapter = popularAdapter
-        binding.popularProductRecycler.setHasFixedSize(true)
     }
 
     private fun setupSlidersRecyclerView(slidersAdapter: SliderAdapter) {
 
         binding.newCollectionRecycler.adapter = slidersAdapter
-        binding.newCollectionRecycler.setHasFixedSize(true)
     }
 
     private fun subscribeToViewStateUpdates(
@@ -97,7 +94,6 @@ class HomeFragment : Fragment() {
         popularAdapter: ProductsAdapter,
         salesAdapter: ProductsAdapter
     ) {
-        // 1
         binding.loading.isVisible = state.loading
         newProductsAdapter.submitList(state.uiHome?.newProducts ?: listOf())
         popularAdapter.submitList(state.uiHome?.popularProducts ?: listOf())

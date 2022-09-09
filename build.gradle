@@ -16,7 +16,7 @@ buildscript {
         mockito_version = '3.5.15'
         room_version = '2.4.3'
         androidx_core_testing_version = '2.1.0'
-        nav_version = '2.5.1'
+        nav_version = '2.5.2'
         glide_version = '4.13.2'
     }
 }

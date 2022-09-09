@@ -45,7 +45,7 @@ class HomeFragmentViewModel @Inject constructor(
     }
 
     private fun loadHome() {
-        if (state.value.uiHome == null) {
+        if (state.value.uiHome == null || (state.value.uiHome?.newProducts.isNullOrEmpty()) && (state.value.uiHome?.popularProducts.isNullOrEmpty()) && (state.value.uiHome?.saleProducts.isNullOrEmpty())) {
             loadHomeProducts()
         }
     }
@@ -60,7 +60,6 @@ class HomeFragmentViewModel @Inject constructor(
                     }
             } catch (e: Exception) {
                 onFailure(e)
-
             }
 
         }
@@ -75,7 +74,6 @@ class HomeFragmentViewModel @Inject constructor(
                 loading = false,
                 uiHome = uiHome,
             )
-
         }
     }
 
@@ -84,7 +82,7 @@ class HomeFragmentViewModel @Inject constructor(
         val exceptionHandler =
             viewModelScope.createExceptionHandler(errorMessage)
             { onFailure(it) }
-        viewModelScope.launch(exceptionHandler) {
+        viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
             requestHomeProducts()
         }
     }

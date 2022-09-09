@@ -39,9 +39,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface Cache {
     suspend fun storeCategories(vararg categories: CachedCategory)
-    suspend fun storeOrUpdateCategories(categories:CachedUpdateCategory)
+    suspend fun storeOrUpdateCategories(categories: CachedUpdateCategory)
 
-    fun getProducts(): Flow<List<CachedProductAggregate>>
+    fun getProducts(categoryId: Long = 0): Flow<List<CachedProductAggregate>>
 
     fun getCategories(): Flow<List<CachedCategory>>
 

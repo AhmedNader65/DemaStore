@@ -45,7 +45,7 @@ import com.dema.store.home.domain.model.HomeProduct
             entity = CachedProductWithDetails::class,
             parentColumns = ["id"],
             childColumns = ["pId"],
-            onDelete = androidx.room.ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE
         )
     ],
     indices = [Index("pId")]

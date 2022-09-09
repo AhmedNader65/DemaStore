@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProductsRepository {
 
-    fun getProducts(): Flow<List<Product>> // 1
+    fun getProducts(categoryId: Long): Flow<List<Product>> // 1
     fun getHome(): Flow<List<HomeProduct>> // 1
     fun getCategories(): Flow<List<Category>> // 1
     suspend fun requestMoreProducts(

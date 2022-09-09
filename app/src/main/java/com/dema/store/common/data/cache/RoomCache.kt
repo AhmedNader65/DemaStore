@@ -47,15 +47,18 @@ class RoomCache @Inject constructor(
     private val homeDao: HomeDao
 ) : Cache {
     override suspend fun storeCategories(vararg categories: CachedCategory) {
-        categoriesDao.insert(*categories)
+        categoriesDao.insertOrUpdate(*categories)
     }
 
     override suspend fun storeOrUpdateCategories(categories: CachedUpdateCategory) {
         categoriesDao.insertOrUpdate(categories)
     }
 
-    override fun getProducts(): Flow<List<CachedProductAggregate>> {
-        return productsDao.getAllProducts()
+    override fun getProducts(categoryId: Long): Flow<List<CachedProductAggregate>> {
+        return if (categoryId == 0L)
+            productsDao.getAllProducts()
+        else
+            productsDao.getCategoryProduct(categoryId)
     }
 
     override fun getCategories(): Flow<List<CachedCategory>> {
@@ -67,11 +70,12 @@ class RoomCache @Inject constructor(
     }
 
     override suspend fun storeHome(vararg home: CachedHome) {
-        homeDao.emptyData()
+//        if (home.isNotEmpty())
+//            homeDao.emptyData()
         homeDao.insertHome(*home)
     }
 
-    override suspend fun storeProducts(vararg products: CachedProductAggregate) {
-        productsDao.insertProductsWithDetails(*products)
+    override suspend fun storeProducts(vararg product: CachedProductAggregate) {
+        productsDao.insertProductsWithDetails(*product)
     }
 }

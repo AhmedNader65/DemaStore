@@ -49,6 +49,9 @@ abstract class CategoriesDao {
     @Update(entity = CachedCategory::class)
     abstract suspend fun update(updateCategory: CachedUpdateCategory)
 
+    @Query("UPDATE categories SET name = :name, slug = :slug, icon = :icon, image = :image WHERE id=:id")
+    abstract suspend fun update(id: Long, name: String, slug: String, icon: String, image: String)
+
     @Transaction
     @Query("SELECT * FROM categories")
     abstract fun getAllCategories(): Flow<List<CachedCategory>>
@@ -64,5 +67,22 @@ abstract class CategoriesDao {
             update(updatedCategory)
         else
             insert(updatedCategory.toCachedCategory())
+    }
+
+    suspend fun insertOrUpdate(vararg cachedCategories: CachedCategory) {
+        cachedCategories.forEach { cachedCategory ->
+
+            val itemsFromDB = getCategoryById(cachedCategory.id)
+            if (itemsFromDB != null)
+                update(
+                    cachedCategory.id,
+                    cachedCategory.name,
+                    cachedCategory.slug,
+                    cachedCategory.icon,
+                    cachedCategory.image
+                )
+            else
+                insert(cachedCategory)
+        }
     }
 }

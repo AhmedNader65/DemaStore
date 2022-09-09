@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
         val radius = resources.getDimension(com.intuit.sdp.R.dimen._16sdp); //32dp
 
-        val materialShapeDrawable = binding.appBarLayout.background as MaterialShapeDrawable
+        val materialShapeDrawable = binding.toolBarLayout.background as MaterialShapeDrawable
         materialShapeDrawable.shapeAppearanceModel = materialShapeDrawable.shapeAppearanceModel
             .toBuilder()
             .setBottomLeftCorner(CornerFamily.ROUNDED, radius)
