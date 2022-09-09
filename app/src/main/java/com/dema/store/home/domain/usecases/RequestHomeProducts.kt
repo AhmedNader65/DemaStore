@@ -11,11 +11,10 @@ class RequestHomeProducts @Inject constructor(
 ) {
     suspend operator fun invoke() {
         return withContext(dispatchersProvider.io()) {
-            val (newProducts, popularProducts, saleProducts) =
+            val homeProducts =
                 productsRepository.requestHomeProducts()
-            productsRepository.storeProducts(newProducts)
-            productsRepository.storeProducts(popularProducts)
-            productsRepository.storeProducts(saleProducts)
+            productsRepository.storeProducts(homeProducts.map { it.product })
+            productsRepository.storeHome(homeProducts)
         }
     }
 }

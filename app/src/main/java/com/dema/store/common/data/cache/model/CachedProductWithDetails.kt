@@ -18,7 +18,7 @@ import com.dema.store.common.domain.model.product.ProductWithDetails
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index("categoryId")]
+    indices = [Index("categoryId"),]
 )
 data class CachedProductWithDetails(
     @PrimaryKey(autoGenerate = false)
@@ -65,7 +65,6 @@ data class CachedProductWithDetails(
     }
 
     fun toDomain(
-        reviews: List<CachedReview>,
         images: List<CachedImage>,
         image: CachedImage,
         category: CachedCategory
@@ -79,7 +78,7 @@ data class CachedProductWithDetails(
             categoryName = category.name,
             price = price,
             regularPrice = regularPrice,
-            details = mapDetails(reviews, images),
+            details = mapDetails( images),
             isNew = isNew,
             isSale = isSale,
             isPopular = isPopular,
@@ -113,7 +112,6 @@ data class CachedProductWithDetails(
     }
 
     private fun mapDetails(
-        reviews: List<CachedReview>,
         images: List<CachedImage>
     ): Details {
         return Details(
@@ -121,7 +119,6 @@ data class CachedProductWithDetails(
             size = size,
             materials = materials,
             isLiked = isLiked,
-            reviews = reviews.map { it.toDomain() },
             images = images.map { it.toDomain() }
         )
     }

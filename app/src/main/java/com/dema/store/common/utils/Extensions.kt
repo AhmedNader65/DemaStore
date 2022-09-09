@@ -1,7 +1,8 @@
-
 package com.dema.store.common.utils
 
 import android.widget.ImageView
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -11,6 +12,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@BindingAdapter("app:setupImage")
 fun ImageView.setImage(url: String) {
     Glide.with(this.context)
         .load(url.ifEmpty { null })
@@ -18,6 +20,11 @@ fun ImageView.setImage(url: String) {
         .centerCrop()
         .transition(DrawableTransitionOptions.withCrossFade())
         .into(this)
+}
+
+@BindingAdapter("app:setupPrice")
+fun TextView.setPriceWithCurrency(price: String) {
+    text = price + resources.getText(R.string.currency)
 }
 
 inline fun CoroutineScope.createExceptionHandler(

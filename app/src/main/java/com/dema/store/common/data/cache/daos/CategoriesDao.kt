@@ -44,10 +44,7 @@ import kotlinx.coroutines.flow.Flow
 abstract class CategoriesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(organizations: List<CachedCategory>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(organizations: CachedCategory)
+    abstract suspend fun insert(vararg organization: CachedCategory)
 
     @Update(entity = CachedCategory::class)
     abstract suspend fun update(updateCategory: CachedUpdateCategory)

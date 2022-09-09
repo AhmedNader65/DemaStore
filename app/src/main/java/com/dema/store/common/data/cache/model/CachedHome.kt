@@ -32,46 +32,61 @@
  * THE SOFTWARE.
  */
 
-package com.dema.store.common.data.cache
+package com.dema.store.common.data.cache.model
 
-import com.dema.store.common.data.cache.daos.CategoriesDao
-import com.dema.store.common.data.cache.daos.HomeDao
-import com.dema.store.common.data.cache.daos.ProductsDao
-import com.dema.store.common.data.cache.model.*
-import kotlinx.coroutines.flow.*
-import javax.inject.Inject
+import androidx.room.*
+import com.dema.store.common.domain.model.category.Category
+import com.dema.store.home.domain.model.HomeProduct
 
-class RoomCache @Inject constructor(
-    private val productsDao: ProductsDao,
-    private val categoriesDao: CategoriesDao,
-    private val homeDao: HomeDao
-) : Cache {
-    override suspend fun storeCategories(vararg categories: CachedCategory) {
-        categoriesDao.insert(*categories)
+@Entity(
+    tableName = "home",
+    foreignKeys = [
+        androidx.room.ForeignKey(
+            entity = CachedProductWithDetails::class,
+            parentColumns = ["id"],
+            childColumns = ["pId"],
+            onDelete = androidx.room.ForeignKey.CASCADE
+        )
+    ],
+    indices = [Index("pId")]
+)
+data class CachedHome(
+    @PrimaryKey(autoGenerate = true)
+    val homeId: Long = 0,
+    val type: String,
+    val pId: Long,
+) {
+    companion object {
+        fun fromDomain(domainModel: HomeProduct): CachedHome {
+
+            return CachedHome(
+                homeId = domainModel.id,
+                type = domainModel.type,
+                pId = domainModel.product.id
+            )
+        }
     }
+}
 
-    override suspend fun storeOrUpdateCategories(categories: CachedUpdateCategory) {
-        categoriesDao.insertOrUpdate(categories)
-    }
 
-    override fun getProducts(): Flow<List<CachedProductAggregate>> {
-        return productsDao.getAllProducts()
-    }
+data class CachedHomeAggregate(
+    @Embedded
+    val home: CachedHome,
+    @Embedded
+    val products: CachedProductWithDetails,
+    @Embedded
+    val images: CachedImage
+) {
 
-    override fun getCategories(): Flow<List<CachedCategory>> {
-        return categoriesDao.getAllCategories()
-    }
-
-    override fun getHome(): Flow<List<CachedHomeAggregate>> {
-        return homeDao.getHome()
-    }
-
-    override suspend fun storeHome(vararg home: CachedHome) {
-        homeDao.emptyData()
-        homeDao.insertHome(*home)
-    }
-
-    override suspend fun storeProducts(vararg products: CachedProductAggregate) {
-        productsDao.insertProductsWithDetails(*products)
+    fun toDomain(): HomeProduct {
+        return HomeProduct(
+            home.homeId,
+            home.type,
+            products.toDomain(
+                image = images,
+                images = listOf(),
+                category = CachedCategory(1, "", "", "", "")
+            ),
+        )
     }
 }

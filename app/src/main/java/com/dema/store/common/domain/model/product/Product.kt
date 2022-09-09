@@ -1,5 +1,8 @@
 package com.dema.store.common.domain.model.product
 
+import com.dema.store.common.presentation.model.UIProduct
+import com.dema.store.home.presentation.model.UIHome
+
 data class Product(
     val id: Long,
     val sku: String?,
@@ -17,6 +20,12 @@ data class Product(
     val isLiked: Boolean,
 ) {
     val hasDiscount = price != regularPrice
+
+    fun mapToView(): UIProduct {
+        return UIProduct(
+            id,name,categoryName,image?.getSmallestAvailablePhoto(),price,regularPrice,inStock,isInCart,isLiked
+        )
+    }
 }
 
 data class ProductWithDetails(
@@ -37,6 +46,12 @@ data class ProductWithDetails(
     val isLiked: Boolean,
 ) {
     val hasDiscount = price != regularPrice
+
+    fun mapToView(): UIProduct {
+        return UIProduct(
+            id,name,categoryName,image?.getSmallestAvailablePhoto(),price,regularPrice,inStock,isInCart,isLiked
+        )
+    }
 }
 
 data class Image(

@@ -4,6 +4,9 @@
 
     <data>
 
+        <variable
+            name="item"
+            type="com.dema.store.common.presentation.model.UIProduct" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -25,7 +28,8 @@
                 android:src="@drawable/demo_product"
                 app:layout_constraintEnd_toStartOf="@+id/barrier"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:setupImage="@{(item.image)}" />
 
             <ImageView
                 android:id="@+id/favorite_btn"
@@ -66,7 +70,7 @@
                 style="@style/TextAppearance.MaterialComponents.Headline6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Gray beam"
+                android:text="@{item.name}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/content_image" />
 
@@ -74,7 +78,7 @@
                 android:id="@+id/description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tulip chair Table Furniture."
+                android:text="@{item.category}"
                 app:layout_constraintStart_toStartOf="@id/content_image"
                 app:layout_constraintTop_toBottomOf="@id/title" />
 
@@ -84,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_8sdp"
-                android:text="85$"
+                app:setupPrice="@{(item.price)}"
                 android:textColor="?colorPrimary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/description" />

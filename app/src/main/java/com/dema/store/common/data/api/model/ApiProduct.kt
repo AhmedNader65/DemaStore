@@ -16,11 +16,10 @@ data class ApiProductDetails(
     @field:Json(name = "materials") val materials: String?,
     @field:Json(name = "name") val name: String?,
     @field:Json(name = "description") val description: String?,
-    @field:Json(name = "price") val price: String?,
-    @field:Json(name = "regular_price") val regularPrice: String?,
+    @field:Json(name = "formated_special_price") val price: String?,
+    @field:Json(name = "formated_regular_price") val regularPrice: String?,
     @field:Json(name = "base_image") val photo: ApiImage,
     @field:Json(name = "images") val photos: List<ApiImage>,
-    @field:Json(name = "reviews") val reviews: List<ApiReviews>?,
     @field:Json(name = "related_products") val relatedProducts: List<ApiProductDetails>?,
     @field:Json(name = "is_wishlisted") val isLiked: Boolean = false,
     @field:Json(name = "is_item_in_cart") val isInCart: Boolean = false,
@@ -60,8 +59,8 @@ fun ApiProductDetails.mapToDomainProduct(): Product {
         photo.mapToDomain(),
         categoryId ?: throw MappingException("Category ID cannot be null"),
         categoryName.orEmpty(),
-        price.orEmpty(),
-        regularPrice.orEmpty(),
+        price?.replace("$","").orEmpty(),
+        regularPrice?.replace("$","").orEmpty(),
         isNew,
         isSale,
         isPopular,
@@ -79,16 +78,13 @@ fun ApiProductDetails.mapToDomainProductWithDetails(): ProductWithDetails {
         photo.mapToDomain(),
         categoryId ?: throw MappingException("Category ID cannot be null"),
         categoryName.orEmpty(),
-        price.orEmpty(),
-        regularPrice.orEmpty(),
+        price?.replace("$","").orEmpty(),
+        regularPrice?.replace("$","").orEmpty(),
         Details(
             description.orEmpty(),
             size.orEmpty(),
             materials.orEmpty(),
             isLiked,
-            reviews?.map {
-                it.mapToDomain()
-            } ?: emptyList(),
             photos.map {
                 it.mapToDomain()
             }
@@ -109,7 +105,6 @@ fun ApiReviews.mapToDomain(): Review {
         userName.orEmpty(),
         userImage.orEmpty(),
         date.orEmpty(),
-        review.orEmpty(),
         rate ?: 0
     )
 }

@@ -4,13 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.dema.store.R
+import com.dema.store.common.presentation.Event
 import com.dema.store.common.presentation.ProductsAdapter
 import com.dema.store.common.presentation.SliderAdapter
 import com.dema.store.databinding.FragmentHomeBinding
 import com.dema.store.shopping.presentation.ShoppingEvent
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -33,7 +41,6 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupUI()
         requestInitialAnimalsList()
-
     }
 
     private fun requestInitialAnimalsList() {
@@ -48,6 +55,7 @@ class HomeFragment : Fragment() {
         setupSlidersRecyclerView(slidersAdapter)
         setupPopularRecyclerView(popularAdapter)
         setupSalesRecyclerView(salesAdapter)
+        subscribeToViewStateUpdates(slidersAdapter,popularAdapter,salesAdapter)
     }
 
     private fun setupSalesRecyclerView(salesAdapter: ProductsAdapter) {
@@ -65,6 +73,52 @@ class HomeFragment : Fragment() {
 
         binding.newCollectionRecycler.adapter = slidersAdapter
         binding.newCollectionRecycler.setHasFixedSize(true)
+    }
+
+    private fun subscribeToViewStateUpdates(
+        newProductsAdapter: SliderAdapter,
+        popularAdapter: ProductsAdapter,
+        salesAdapter: ProductsAdapter
+    ) {
+        viewLifecycleOwner.lifecycleScope.launch {
+
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED)
+            {
+                viewModel.state.collect {
+                    updateScreenState(it, newProductsAdapter, popularAdapter, salesAdapter)
+                }
+            }
+        }
+    }
+
+    private fun updateScreenState(
+        state: HomeViewState,
+        newProductsAdapter: SliderAdapter,
+        popularAdapter: ProductsAdapter,
+        salesAdapter: ProductsAdapter
+    ) {
+        // 1
+        binding.loading.isVisible = state.loading
+        newProductsAdapter.submitList(state.uiHome?.newProducts ?: listOf())
+        popularAdapter.submitList(state.uiHome?.popularProducts ?: listOf())
+        salesAdapter.submitList(state.uiHome?.saleProducts ?: listOf())
+        handleFailures(state.failure)
+    }
+
+    private fun handleFailures(failure: Event<Throwable>?) {
+        val unhandledFailure = failure?.getContentIfNotHandled() ?: return
+        val fallbackMessage = getString(R.string.an_error_occurred)
+        val snackbarMessage = if (unhandledFailure.message.isNullOrEmpty()) {
+            fallbackMessage
+        } else {
+            unhandledFailure.message!! // 4
+        }
+        if (snackbarMessage.isNotEmpty()) {
+            Snackbar.make(
+                requireView(), snackbarMessage,
+                Snackbar.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun createProductsAdapter(): ProductsAdapter {

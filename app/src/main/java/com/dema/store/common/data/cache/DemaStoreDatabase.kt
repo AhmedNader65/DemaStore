@@ -37,19 +37,21 @@ package com.dema.store.common.data.cache
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.dema.store.common.data.cache.daos.CategoriesDao
+import com.dema.store.common.data.cache.daos.HomeDao
 import com.dema.store.common.data.cache.daos.ProductsDao
 import com.dema.store.common.data.cache.model.*
 
 @Database(
     entities = [
         CachedCategory::class,
+        CachedHome::class,
         CachedImage::class,
-        CachedReview::class,
         CachedProductWithDetails::class,
     ],
-    version = 1
+    version = 3
 )
 abstract class DemaStoreDatabase : RoomDatabase() {
     abstract fun categoriesDao(): CategoriesDao
     abstract fun productsDao(): ProductsDao
+    abstract fun homeDao(): HomeDao
 }

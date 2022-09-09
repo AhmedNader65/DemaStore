@@ -64,7 +64,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_16sdp"
                 android:text="@string/popular_product"
-                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/new_collection_recycler" />
 
@@ -73,7 +72,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/more"
-                android:visibility="gone"
                 android:textColor="?colorPrimary"
                 app:layout_constraintBaseline_toBaselineOf="@id/popular_product_header"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -97,7 +95,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_16sdp"
                 android:text="@string/sale"
-                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/popular_product_recycler" />
 
@@ -106,7 +103,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/more"
-                android:visibility="gone"
                 android:textColor="?colorPrimary"
                 app:layout_constraintBaseline_toBaselineOf="@id/sale_product_header"
                 app:layout_constraintEnd_toEndOf="parent" />

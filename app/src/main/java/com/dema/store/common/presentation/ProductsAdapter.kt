@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dema.store.common.presentation.model.UIProduct
 import com.dema.store.databinding.ItemProductBinding
 
-class ProductsAdapter : ListAdapter<UIProduct, ProductsAdapter.ProductsViewHolder>(ITEM_COMPARATOR) {
+class ProductsAdapter :
+    ListAdapter<UIProduct, ProductsAdapter.ProductsViewHolder>(ITEM_COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductsViewHolder {
         val binding = ItemProductBinding
@@ -28,6 +29,7 @@ class ProductsAdapter : ListAdapter<UIProduct, ProductsAdapter.ProductsViewHolde
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: UIProduct) {
+            binding.item = item
         }
     }
 }

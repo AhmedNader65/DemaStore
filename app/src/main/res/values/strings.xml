@@ -9,4 +9,6 @@
     <string name="popular_product">Popular Products</string>
     <string name="sale">Sale</string>
     <string name="more">More</string>
+    <string name="an_error_occurred">An error occurred</string>
+    <string name="currency">EGP</string>
 </resources>

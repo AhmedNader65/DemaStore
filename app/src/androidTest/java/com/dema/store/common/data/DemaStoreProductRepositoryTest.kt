@@ -89,7 +89,7 @@ class DemaStoreProductRepositoryTest {
             .build()
             .create(DemaApi::class.java)
 
-        cache = RoomCache(database.productsDao(), database.categoriesDao())
+        cache = RoomCache(database.productsDao(), database.categoriesDao(), database.homeDao())
 
         repository = DemaStoreProductRepository(
             api,
@@ -149,7 +149,7 @@ class DemaStoreProductRepositoryTest {
             val product = paginatedProducts.products.first()
             // When
             repository.storeCategory(listOf(category))
-            repository.storeProducts(category, listOf(product))
+            repository.storeProducts(listOf(product))
             // Then
             val insertedValue = repository.getProducts().first()
             assert(insertedValue[0].id == expectedProductId)

@@ -20,7 +20,7 @@ import com.dema.store.common.domain.model.product.Image
 )
 data class CachedImage(
     @PrimaryKey(autoGenerate = false)
-    val id: Long = 0,
+    val imageId: Long = 0,
     val productId: Long,
     val path: String,
     val url: String,
@@ -36,7 +36,7 @@ data class CachedImage(
 
                 return CachedImage(
                     productId = productId,
-                    id = id,
+                    imageId = id,
                     path = path,
                     url = url,
                     original = original,
@@ -51,5 +51,5 @@ data class CachedImage(
         }
     }
 
-    fun toDomain(): Image = Image(id, path, url, original, small, medium, large)
+    fun toDomain(): Image = Image(imageId, path, url, original, small, medium, large)
 }

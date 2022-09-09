@@ -5,7 +5,6 @@ data class Details(
     val size: String,
     val materials: String,
     var isLiked: Boolean,
-    val reviews: List<Review>,
     val images: List<Image?>
 ) {
 }
@@ -15,6 +14,5 @@ data class Review(
     val userName: String,
     val userImage: String,
     val date: String,
-    val review: String,
     val rate: Int
 )

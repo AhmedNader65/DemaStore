@@ -38,6 +38,7 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.dema.store.common.domain.model.category.Category
 import com.dema.store.common.domain.model.category.UpdateCategory
+import com.dema.store.common.domain.model.product.Details
 import com.dema.store.common.domain.model.product.ProductWithDetails
 
 data class CachedProductAggregate(
@@ -48,12 +49,6 @@ data class CachedProductAggregate(
         entityColumn = "productId"
     )
     val photos: List<CachedImage?>,
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "productId"
-    )
-    val reviews: List<CachedReview>,
-
     @Relation(
         parentColumn = "categoryId",
         entityColumn = "id"
@@ -71,11 +66,41 @@ data class CachedProductAggregate(
                 photos = productWithDetails.details.images.map {
                     CachedImage.fromDomain(productWithDetails.id, it)
                 },
-                reviews = productWithDetails.details.reviews.map {
-                    CachedReview.fromDomain(productWithDetails.id, it)
-                },
                 category = CachedUpdateCategory.fromDomain(category).toCachedCategory()
             )
         }
+    }
+
+    fun toDomain(): ProductWithDetails {
+
+        return ProductWithDetails(
+            id = product.id,
+            name = product.name,
+            sku = product.sku,
+            image = photos.first()?.toDomain(),
+            categoryId = category.id,
+            categoryName = category.name,
+            price = product.price,
+            regularPrice = product.regularPrice,
+            details = mapDetails( photos),
+            isNew = product.isNew,
+            isSale = product.isSale,
+            isPopular = product.isPopular,
+            inStock = product.inStock,
+            isInCart = product.isInCart,
+            isLiked = product.isLiked
+        )
+    }
+
+    private fun mapDetails(
+        images: List<CachedImage?>
+    ): Details {
+        return Details(
+            description = product.description,
+            size = product.size,
+            materials = product.materials,
+            isLiked = product.isLiked,
+            images = images.map { it?.toDomain() }
+        )
     }
 }

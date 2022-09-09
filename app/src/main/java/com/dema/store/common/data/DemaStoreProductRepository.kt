@@ -5,14 +5,16 @@ import com.dema.store.common.data.api.model.mapToDomain
 import com.dema.store.common.data.api.model.mapToDomainProductWithDetails
 import com.dema.store.common.data.cache.Cache
 import com.dema.store.common.data.cache.model.CachedCategory
+import com.dema.store.common.data.cache.model.CachedHome
 import com.dema.store.common.data.cache.model.CachedProductAggregate
+import com.dema.store.common.data.cache.model.CachedUpdateCategory
 import com.dema.store.common.domain.model.category.Category
 import com.dema.store.common.domain.model.category.UpdateCategory
 import com.dema.store.common.domain.model.pagination.PaginatedProducts
 import com.dema.store.common.domain.model.product.Product
 import com.dema.store.common.domain.model.product.ProductWithDetails
 import com.dema.store.common.domain.repositories.ProductsRepository
-import com.dema.store.home.domain.model.HomeProducts
+import com.dema.store.home.domain.model.HomeProduct
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -34,6 +36,16 @@ class DemaStoreProductRepository @Inject constructor(
                 }
             }
 
+    }
+
+    override fun getHome(): Flow<List<HomeProduct>> {
+        return cache.getHome()
+            .distinctUntilChanged()
+            .map {
+                it.map {
+                    it.toDomain()
+                }
+            }
     }
 
     override fun getCategories(): Flow<List<Category>> {
@@ -66,19 +78,9 @@ class DemaStoreProductRepository @Inject constructor(
 
     }
 
-    override suspend fun requestHomeProducts(): HomeProducts {
-        val (newProducts, popularProducts, saleProducts) = api.getHome()
-        return HomeProducts(
-            newProducts?.map {
-                it.mapToDomainProductWithDetails()
-            }.orEmpty(),
-            popularProducts?.map {
-                it.mapToDomainProductWithDetails()
-            }.orEmpty(),
-            saleProducts?.map {
-                it.mapToDomainProductWithDetails()
-            }.orEmpty(),
-        )
+    override suspend fun requestHomeProducts(): List<HomeProduct> {
+
+        return api.getHome().mapToDomain()
     }
 
     override suspend fun requestCategories(): List<Category> {
@@ -89,15 +91,23 @@ class DemaStoreProductRepository @Inject constructor(
     }
 
     override suspend fun storeCategory(category: List<Category>) {
-        cache.storeCategories(category.map { CachedCategory.fromDomain(it) })
+        cache.storeCategories(*category.map { CachedCategory.fromDomain(it) }.toTypedArray())
     }
 
     override suspend fun storeProducts(products: List<ProductWithDetails>) {
 
-        cache.storeProducts(products.map {
+        cache.storeProducts(*products.map {
             val category = UpdateCategory(it.categoryId, it.categoryName)
+            cache.storeOrUpdateCategories(CachedUpdateCategory.fromDomain(category))
             CachedProductAggregate.fromDomain(it, category)
-        })
+        }.toTypedArray())
+    }
+
+    override suspend fun storeHome(home: List<HomeProduct>) {
+        cache.storeHome(*home.map {
+            CachedHome.fromDomain(it)
+        }.toTypedArray())
+
     }
 
 }

@@ -40,6 +40,7 @@ import com.dema.store.common.data.cache.Cache
 import com.dema.store.common.data.cache.DemaStoreDatabase
 import com.dema.store.common.data.cache.RoomCache
 import com.dema.store.common.data.cache.daos.CategoriesDao
+import com.dema.store.common.data.cache.daos.HomeDao
 import com.dema.store.common.data.cache.daos.ProductsDao
 import dagger.Binds
 import dagger.Module
@@ -68,6 +69,7 @@ abstract class CacheModule {
                 DemaStoreDatabase::class.java,
                 "demaStore.db"
             )
+                .fallbackToDestructiveMigration()
                 .build()
         }
 
@@ -81,5 +83,11 @@ abstract class CacheModule {
             demaStoreDatabase: DemaStoreDatabase
         ): CategoriesDao =
             demaStoreDatabase.categoriesDao()
+
+        @Provides
+        fun provideHomeDao(
+            demaStoreDatabase: DemaStoreDatabase
+        ): HomeDao =
+            demaStoreDatabase.homeDao()
     }
 }
