@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -24,7 +25,7 @@
                 android:id="@+id/content_image"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_100sdp"
-                android:scaleType="centerInside"
+                android:scaleType="centerCrop"
                 android:src="@drawable/demo_product"
                 app:layout_constraintEnd_toStartOf="@+id/barrier"
                 app:layout_constraintStart_toStartOf="parent"
@@ -67,12 +68,20 @@
 
             <TextView
                 android:id="@+id/title"
-                style="@style/TextAppearance.MaterialComponents.Headline6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:text="@{item.name}"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_12ssp"
+                android:textStyle="bold"
+                app:autoSizeTextType="uniform"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/content_image" />
+                app:layout_constraintTop_toBottomOf="@id/content_image"
+                tools:text="Hello" />
 
             <TextView
                 android:id="@+id/description"
@@ -88,10 +97,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_8sdp"
-                app:setupPrice="@{(item.price)}"
                 android:textColor="?colorPrimary"
+                android:textSize="@dimen/_12ssp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/description" />
+                app:layout_constraintTop_toBottomOf="@id/description"
+                app:setupPrice="@{(item.price)}" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>

@@ -68,13 +68,14 @@ data class Image(
     }
 
     fun getSmallestAvailablePhoto(): String { // 1
-        return when {
-            isValidPhoto(small) -> small!!
-            isValidPhoto(medium) -> medium!!
-            isValidPhoto(large) -> large!!
-            isValidPhoto(original) -> original!!
-            else -> EMPTY_PHOTO
-        }
+        return original
+//        return when {
+//            isValidPhoto(small) -> small
+//            isValidPhoto(medium) -> medium
+//            isValidPhoto(large) -> large
+//            isValidPhoto(original) -> original
+//            else -> EMPTY_PHOTO
+//        }
     }
 
     private fun isValidPhoto(photo: String?): Boolean { // 2

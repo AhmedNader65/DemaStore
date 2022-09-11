@@ -12,7 +12,7 @@ class RequestCategories @Inject constructor(
     private val productsRepository: ProductsRepository,
     private val dispatchersProvider: DispatchersProvider
 ) {
-    suspend operator fun invoke() {
+    suspend operator fun invoke(): List<Category> {
         return withContext(dispatchersProvider.io()) {
             val categories =
                 productsRepository.requestCategories()
@@ -20,7 +20,7 @@ class RequestCategories @Inject constructor(
                 throw NoMoreProductsException("No more categories Available :(")
             }
 
-            productsRepository.storeCategory(categories)
+            return@withContext categories
         }
     }
 }

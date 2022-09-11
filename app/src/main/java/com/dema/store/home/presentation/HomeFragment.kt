@@ -44,7 +44,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun requestInitialHomeData() {
-//        viewModel.onEvent(HomeEvent.RequestInitialProductsList)
+        viewModel.onEvent(HomeEvent.RequestInitialProductsList)
     }
 
 

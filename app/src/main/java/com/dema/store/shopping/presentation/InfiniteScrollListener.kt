@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Razeware LLC
+ * Copyright (c) 2022 Razeware LLC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,61 +32,37 @@
  * THE SOFTWARE.
  */
 
-package com.dema.store.common.data.cache.model
+package com.dema.store.shopping.presentation
 
-import androidx.room.*
-import com.dema.store.common.domain.model.category.Category
-import com.dema.store.home.domain.model.HomeProduct
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
-@Entity(
-    tableName = "home",
-    foreignKeys = [
-        androidx.room.ForeignKey(
-            entity = CachedProductWithDetails::class,
-            parentColumns = ["id"],
-            childColumns = ["pId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
-    indices = [Index("pId")]
-)
-data class CachedHome(
-    @PrimaryKey(autoGenerate = true)
-    val homeId: Long = 0,
-    val type: String,
-    val pId: Long,
-) {
-    companion object {
-        fun fromDomain(domainModel: HomeProduct): CachedHome {
+abstract class InfiniteScrollListener(
+    private val layoutManager: GridLayoutManager,
+    private val pageSize: Int
+) :
+    RecyclerView.OnScrollListener() {
 
-            return CachedHome(
-                homeId = domainModel.id,
-                type = domainModel.type,
-                pId = domainModel.product.id
-            )
-        }
+  override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+    super.onScrolled(recyclerView, dx, dy)
+
+    val visibleItemCount = layoutManager.childCount
+    val totalItemCount = layoutManager.itemCount
+    val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+    if (!isLoading() && !isLastPage()) {
+      if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+          && firstVisibleItemPosition >= 0
+          && totalItemCount >= pageSize
+      ) {
+        loadMoreItems()
+      }
     }
-}
+  }
 
+  abstract fun loadMoreItems()
 
-data class CachedHomeAggregate(
-    @Embedded
-    val home: CachedHome,
-    @Embedded
-    val products: CachedProductWithDetails,
-    @Embedded
-    val images: CachedImage
-) {
+  abstract fun isLastPage(): Boolean
 
-    fun toDomain(): HomeProduct {
-        return HomeProduct(
-            home.homeId,
-            home.type,
-            products.toDomain(
-                image = images,
-                images = listOf(),
-                category = CachedCategory(1, "", "", "", "")
-            ),
-        )
-    }
+  abstract fun isLoading(): Boolean
 }

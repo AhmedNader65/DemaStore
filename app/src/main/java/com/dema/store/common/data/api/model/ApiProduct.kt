@@ -59,8 +59,8 @@ fun ApiProductDetails.mapToDomainProduct(): Product {
         photo.mapToDomain(),
         categoryId ?: throw MappingException("Category ID cannot be null"),
         categoryName.orEmpty(),
-        price?.replace("$","").orEmpty(),
-        regularPrice?.replace("$","").orEmpty(),
+        price?.replace("$", "").orEmpty(),
+        regularPrice?.replace("$", "").orEmpty(),
         isNew,
         isSale,
         isPopular,
@@ -78,8 +78,8 @@ fun ApiProductDetails.mapToDomainProductWithDetails(): ProductWithDetails {
         photo.mapToDomain(),
         categoryId ?: throw MappingException("Category ID cannot be null"),
         categoryName.orEmpty(),
-        price?.replace("$","").orEmpty(),
-        regularPrice?.replace("$","").orEmpty(),
+        price?.replace("$", "").orEmpty(),
+        regularPrice?.replace("$", "").orEmpty(),
         Details(
             description.orEmpty(),
             size.orEmpty(),
@@ -109,19 +109,16 @@ fun ApiReviews.mapToDomain(): Review {
     )
 }
 
-fun ApiImage.mapToDomain(): Image? {
-    id?.let {
-        return Image(
-            it,
-            path.orEmpty(),
-            url.orEmpty(),
-            original.orEmpty(),
-            small.orEmpty(),
-            medium.orEmpty(),
-            large.orEmpty()
-        )
-    }.run {
-        return null
-    }
+fun ApiImage.mapToDomain(): Image {
+    return Image(
+        id ?: 0,
+        path.orEmpty(),
+        url.orEmpty(),
+        original.orEmpty(),
+        small.orEmpty(),
+        medium.orEmpty(),
+        large.orEmpty()
+    )
+
 
 }

@@ -8,7 +8,6 @@ import com.dema.store.common.data.api.utils.FakeServer
 import com.dema.store.common.data.cache.Cache
 import com.dema.store.common.data.cache.DemaStoreDatabase
 import com.dema.store.common.data.cache.RoomCache
-import com.dema.store.common.data.di.CacheModule
 import com.dema.store.common.data.di.PreferencesModule
 import com.dema.store.common.data.preferences.Preferences
 import com.dema.store.common.domain.model.category.Category

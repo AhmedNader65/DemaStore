@@ -33,14 +33,23 @@ class CategoryAdapter(val onCategoryClickListener: CategoryClickListener) :
 
         fun bind(item: UIProductSlider) {
             binding.item = item
+            binding.adapter = this@CategoryAdapter
             binding.onClickListener = onCategoryClickListener
             binding.executePendingBindings()
         }
     }
 
-    class CategoryClickListener(val clickListener: (categoryId: Long) -> Unit) {
-        fun onClick(categoryId: Long) = clickListener(categoryId)
+    class CategoryClickListener(val clickListener: (uiSlider: UIProductSlider) -> Unit) {
+        private var lastSelect: UIProductSlider? = null
+        fun onClick(adapter: CategoryAdapter,uiSlider: UIProductSlider) {
+            lastSelect?.isSelected = false
+            uiSlider.isSelected = true
+            lastSelect = uiSlider
+            adapter.notifyDataSetChanged()
+            clickListener(uiSlider)
+        }
     }
+
 }
 
 private val ITEM_COMPARATOR = object : DiffUtil.ItemCallback<UIProductSlider>() {

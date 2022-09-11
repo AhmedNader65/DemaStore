@@ -12,6 +12,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.dema.store.R
 import com.dema.store.common.domain.model.product.Image
 import com.dema.store.common.domain.model.product.Product
@@ -70,13 +72,45 @@ class StoreFragment : Fragment() {
     }
 
     private fun setupProductsRecycler(productsAdapter: ProductsAdapter) {
-        binding.productsRecycler.adapter = productsAdapter
+        binding.productsRecycler.apply {
+            adapter = productsAdapter
+            addOnScrollListener(
+                createInfiniteScrollListener(
+                    layoutManager
+                            as GridLayoutManager
+                )
+            )
+        }
+
+    }
+
+    private fun createInfiniteScrollListener(
+        layoutManager: GridLayoutManager
+    ): RecyclerView.OnScrollListener {
+        return object : InfiniteScrollListener(
+            layoutManager,
+            StoreFragmentViewModel.UI_PAGE_SIZE
+        ) {
+            override fun loadMoreItems() {
+                requestMoreProducts()
+            }
+
+            override fun isLoading(): Boolean =
+                viewModel.isLoadingMoreProducts
+
+            override fun isLastPage(): Boolean = viewModel.isLastPage
+        }
+    }
+
+    private fun requestMoreProducts() {
+        viewModel.onEvent(ShoppingEvent.RequestMoreProducts)
     }
 
     private fun createCategoriesAdapter(): CategoryAdapter {
         return CategoryAdapter(CategoryAdapter.CategoryClickListener {
-            viewModel.loadCategoryProducts(it)
-            Toast.makeText(requireContext(), "clicked category #$it", Toast.LENGTH_SHORT).show()
+            viewModel.loadCategoryProducts(it.id)
+            Toast.makeText(requireContext(), "clicked category #${it.id}", Toast.LENGTH_SHORT)
+                .show()
         })
     }
 
@@ -121,8 +155,7 @@ class StoreFragment : Fragment() {
         productsAdapter: ProductsAdapter
     ) {
         binding.loading.isVisible = state.loading
-        if (state.products.isNotEmpty())
-            productsAdapter.submitList(state.products)
+        productsAdapter.submitList(state.products)
         handleFailures(state.failure)
     }
 

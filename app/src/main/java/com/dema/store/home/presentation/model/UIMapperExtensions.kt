@@ -2,6 +2,7 @@ package com.dema.store.home.presentation.model
 
 import com.dema.store.common.domain.model.category.Category
 import com.dema.store.common.domain.model.product.Product
+import com.dema.store.common.domain.model.product.ProductWithDetails
 import com.dema.store.common.presentation.model.UIProduct
 import com.dema.store.home.domain.model.HomeProduct
 
@@ -19,7 +20,7 @@ fun List<HomeProduct>.toUIModel(): UIHome {
     )
 }
 
-fun List<Product>.toUIProductModel(): List<UIProduct> {
+fun List<ProductWithDetails>.toUIProductModel(): List<UIProduct> {
     return map { it.mapToView() }
 }
 

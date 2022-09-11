@@ -4,14 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dema.store.common.domain.model.NetworkException
 import com.dema.store.common.domain.model.NetworkUnavailableException
-import com.dema.store.common.domain.model.product.Product
-import com.dema.store.common.domain.model.product.ProductWithDetails
 import com.dema.store.common.presentation.Event
-import com.dema.store.common.presentation.model.UIProduct
 import com.dema.store.common.utils.createExceptionHandler
-import com.dema.store.home.domain.usecases.GetHome
 import com.dema.store.home.domain.usecases.RequestHomeProducts
-import com.dema.store.home.domain.usecases.RequestNextPageOfProducts
 import com.dema.store.home.presentation.model.UIHome
 import com.dema.store.home.presentation.model.toUIModel
 import com.dema.store.utils.Logger
@@ -25,13 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeFragmentViewModel @Inject constructor(
     private val requestHomeProducts: RequestHomeProducts,
-    private val getHome: GetHome
 ) :
     ViewModel() {
-
-    init {
-        subscribeToHomeUpdates()
-    }
 
     private val _state = MutableStateFlow(HomeViewState())
     val state: StateFlow<HomeViewState> =
@@ -50,20 +40,6 @@ class HomeFragmentViewModel @Inject constructor(
         }
     }
 
-    private fun subscribeToHomeUpdates() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-
-                getHome()
-                    .collect {
-                        onNewProductsList(it.toUIModel())
-                    }
-            } catch (e: Exception) {
-                onFailure(e)
-            }
-
-        }
-    }
 
     private fun onNewProductsList(uiHome: UIHome) {
         Logger.d("Got more products!")
@@ -84,6 +60,7 @@ class HomeFragmentViewModel @Inject constructor(
             { onFailure(it) }
         viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
             requestHomeProducts()
+            onNewProductsList(requestHomeProducts().toUIModel())
         }
     }
 

@@ -3,6 +3,7 @@ package com.dema.store.home.domain.usecases
 import com.dema.store.common.domain.model.NoMoreProductsException
 import com.dema.store.common.domain.model.category.Category
 import com.dema.store.common.domain.model.pagination.Pagination
+import com.dema.store.common.domain.model.product.ProductWithDetails
 import com.dema.store.common.domain.repositories.ProductsRepository
 import com.dema.store.common.utils.DispatchersProvider
 import kotlinx.coroutines.withContext
@@ -16,7 +17,7 @@ class RequestNextPageOfProducts @Inject constructor(
         pageToLoad: Int,
         pageSize: Int = Pagination.DEFAULT_PAGE_SIZE,
         category: Long
-    ): Pagination {
+    ): Pair<List<ProductWithDetails>, Pagination> {
         return withContext(dispatchersProvider.io()) {
             val (products, pagination) =
                 productsRepository.requestMoreProducts(pageToLoad, pageSize, category = category)
@@ -24,8 +25,7 @@ class RequestNextPageOfProducts @Inject constructor(
                 throw NoMoreProductsException("No more products Available :(")
             }
 
-            productsRepository.storeProducts(products)
-            return@withContext pagination
+            return@withContext Pair(products,pagination)
         }
     }
 }

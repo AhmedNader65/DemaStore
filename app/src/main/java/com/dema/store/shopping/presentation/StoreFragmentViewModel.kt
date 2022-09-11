@@ -9,8 +9,6 @@ import com.dema.store.common.domain.model.pagination.Pagination
 import com.dema.store.common.presentation.Event
 import com.dema.store.common.presentation.model.UIProduct
 import com.dema.store.common.utils.createExceptionHandler
-import com.dema.store.home.domain.usecases.GetCategories
-import com.dema.store.home.domain.usecases.GetProducts
 import com.dema.store.home.domain.usecases.RequestCategories
 import com.dema.store.home.domain.usecases.RequestNextPageOfProducts
 import com.dema.store.home.presentation.model.*
@@ -28,16 +26,9 @@ import javax.inject.Inject
 @HiltViewModel
 class StoreFragmentViewModel @Inject constructor(
     private val requestNextPageOfProducts: RequestNextPageOfProducts,
-    private val requestCategories: RequestCategories,
-    private val getProducts: GetProducts,
-    private val getCategories: GetCategories
+    private val requestCategories: RequestCategories
 ) :
     ViewModel() {
-
-    init {
-        subscribeToProductsUpdates()
-        subscribeToCategoryUpdates()
-    }
 
     private val _state = MutableStateFlow(StoreViewState())
     val state: StateFlow<StoreViewState> =
@@ -47,11 +38,18 @@ class StoreFragmentViewModel @Inject constructor(
         _categoriesState.asStateFlow()
     private var currentPage = 0
     private var categoryId = 0L
+    val isLastPage: Boolean
+        get() = state.value.noMoreProducts
+    var isLoadingMoreProducts: Boolean = false
+        private set
 
     fun onEvent(event: ShoppingEvent) {
         when (event) {
             is ShoppingEvent.RequestInitialProductsList ->
                 loadProducts()
+            is ShoppingEvent.RequestMoreProducts ->
+                loadNextProductPage()
+
         }
     }
 
@@ -64,33 +62,7 @@ class StoreFragmentViewModel @Inject constructor(
         }
     }
 
-    private fun subscribeToCategoryUpdates() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                getCategories()
-                    .collect {
-                        onCategoriesFetched(it.toUICategoryModel())
-                    }
-            } catch (e: Exception) {
-                onFailure(e)
-            }
 
-        }
-    }
-
-    private fun subscribeToProductsUpdates() {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                getProducts(categoryId)
-                    .collect {
-                        onNewProductsList(it.toUIProductModel())
-                    }
-            } catch (e: Exception) {
-                onFailure(e)
-            }
-
-        }
-    }
 
     private fun onNewProductsList(productsList: List<UIProduct>) {
         Logger.d("Got more products!")
@@ -118,8 +90,14 @@ class StoreFragmentViewModel @Inject constructor(
     }
 
     fun loadCategoryProducts(categoryId: Long = 0) {
+        _state.update { oldState ->
+            oldState.copy(
+                loading = true,
+                products = listOf(),
+            )
+
+        }
         this.categoryId = categoryId
-        subscribeToProductsUpdates()
     }
 
     private fun loadNextProductPage() {
@@ -129,8 +107,9 @@ class StoreFragmentViewModel @Inject constructor(
             { onFailure(it) }
         viewModelScope.launch(exceptionHandler) {
             Logger.d("Requesting more products.")
-            val pagination = requestNextPageOfProducts(++currentPage, category = categoryId)
-            onPaginationInfoObtained(pagination)
+            val result = requestNextPageOfProducts(++currentPage, category = categoryId)
+            onPaginationInfoObtained(result.second)
+            onNewProductsList(result.first.toUIProductModel())
 
         }
     }
@@ -142,7 +121,7 @@ class StoreFragmentViewModel @Inject constructor(
             { onFailure(it) }
         viewModelScope.launch(exceptionHandler) {
             Logger.d("Requesting categories.")
-            requestCategories()
+            onCategoriesFetched(requestCategories().toUICategoryModel())
 
         }
     }
@@ -171,5 +150,9 @@ class StoreFragmentViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    companion object {
+        const val UI_PAGE_SIZE = Pagination.DEFAULT_PAGE_SIZE
     }
 }
